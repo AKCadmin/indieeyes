@@ -156,629 +156,108 @@ const SidebarContent = (props) => {
           <ul className="metismenu list-unstyled" id="side-menu">
             <li className="menu-title">{props.t("Menu")} </li>
             <li>
-              <Link to="/#" className="has-arrow">
+              <Link to="/dashboard">
                 <i className="bx bx-home-circle"></i>
                 <span>{props.t("Dashboards")}</span>
               </Link>
-              <ul className="sub-menu" aria-expanded="false">
-                <li>
-                  <Link to="/dashboard">{props.t("Default")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Saas")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Crypto")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Blog")}</Link>
-                </li>
-                <li>
-                  <Link to="#">
-                    {props.t("Job")}
-                  </Link>
-                </li>
-              </ul>
             </li>
 
-            <li className="menu-title">{props.t("Apps")}</li>
-
+            {/* New Menu Items */}
             <li>
-              <Link to="#" className=" ">
-                <i className="bx bx-calendar"></i>
-                <span>{props.t("Calendar")}</span>
-              </Link>
-            </li>
-
-            <li>
-              <Link to="#" className="">
-                <i className="bx bx-chat"></i>
-                <span>{props.t("Chat")}</span>
-              </Link>
+              <Link to="/about"><i className="bx bx-info-circle"></i> About</Link>
             </li>
             <li>
-              <Link to="#">
-                <i className="bx bx-file"></i>
-                <span>{props.t("File Manager")}</span>
-              </Link>
-            </li>
-
-            <li>
-              <Link to="/#" className="has-arrow">
-                <i className="bx bx-store"></i>
-                <span>{props.t("Ecommerce")}</span>
-              </Link>
-              <ul className="sub-menu" aria-expanded="false">
-                <li>
-                  <Link to="#">{props.t("Products")}</Link>
-                </li>
-                <li>
-                  <Link to="#">
-                    {props.t("Product Detail")}
-                  </Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Orders")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Customers")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Cart")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Checkout")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Shops")}</Link>
-                </li>
-                <li>
-                  <Link to="#">
-                    {props.t("Add Product")}
-                  </Link>
-                </li>
-              </ul>
-            </li>
-
-            <li>
-              <Link to="/#" className="has-arrow ">
-                <i className="bx bx-bitcoin"></i>
-                <span>{props.t("Crypto")}</span>
-              </Link>
-              <ul className="sub-menu" aria-expanded="false">
-                <li>
-                  <Link to="#">{props.t("Wallet")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Buy/Sell")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Exchange")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Landing")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Orders")}</Link>
-                </li>
-                <li>
-                  <Link to="#">
-                    {props.t("KYC Application")}
-                  </Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("ICO Landing")}</Link>
-                </li>
-              </ul>
-            </li>
-
-            <li>
-              <Link to="/#" className="has-arrow">
-                <i className="bx bx-envelope"></i>
-                <span>{props.t("Email")}</span>
-              </Link>
-              <ul className="sub-menu" aria-expanded="false">
-                <li>
-                  <Link to="#">{props.t("Inbox")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Read Email")} </Link>
-                </li>
-                <li>
-                  <Link to="/#" className="has-arrow">
-                    <span key="t-email-templates">{props.t("Templates")}</span>
-                  </Link>
-                  <ul className="sub-menu" aria-expanded="false">
-                    <li>
-                      <Link to="#">
-                        {props.t("Basic Action")}
-                      </Link>
-                    </li>
-                    <li>
-                      <Link to="#">
-                        {props.t("Alert Email")}{" "}
-                      </Link>
-                    </li>
-                    <li>
-                      <Link to="#">
-                        {props.t("Billing Email")}{" "}
-                      </Link>
-                    </li>
-                  </ul>
-                </li>
-              </ul>
-            </li>
-
-            <li>
-              <Link to="/#" className="has-arrow ">
-                <i className="bx bx-receipt"></i>
-                <span>{props.t("Invoices")}</span>
-              </Link>
-              <ul className="sub-menu" aria-expanded="false">
-                <li>
-                  <Link to="#">{props.t("Invoice List")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Invoice Detail")}</Link>
-                </li>
-              </ul>
-            </li>
-
-            <li>
-              <Link to="/#" className="has-arrow ">
-                <i className="bx bx-briefcase-alt-2"></i>
-                <span>{props.t("Projects")}</span>
-              </Link>
-              <ul className="sub-menu" aria-expanded="false">
-                <li>
-                  <Link to="#">{props.t("Projects Grid")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Projects List")}</Link>
-                </li>
-                <li>
-                  <Link to="#">
-                    {props.t("Project Overview")}
-                  </Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Create New")}</Link>
-                </li>
-              </ul>
-            </li>
-
-            <li>
-              <Link to="/#" className="has-arrow ">
-                <i className="bx bx-task"></i>
-                <span>{props.t("Tasks")}</span>
-              </Link>
-              <ul className="sub-menu" aria-expanded="false">
-                <li>
-                  <Link to="#">{props.t("Task List")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Tasks Kanban")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Create Task")}</Link>
-                </li>
-              </ul>
-            </li>
-
-            <li>
-              <Link to="/#" className="has-arrow ">
-                <i className="bx bxs-user-detail"></i>
-                <span>{props.t("Contacts")}</span>
-              </Link>
-              <ul className="sub-menu" aria-expanded="false">
-                <li>
-                  <Link to="#">{props.t("User Grid")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("User List")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Profile")}</Link>
-                </li>
-              </ul>
-            </li>
-
-            <li>
-              <Link to="/#" className="has-arrow ">
-                <i className="bx bxs-detail" />
-
-                <span>{props.t("Blog")}</span>
-              </Link>
-              <ul className="sub-menu" aria-expanded="false">
-                <li>
-                  <Link to="#">{props.t("Blog List")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Blog Grid")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Blog Details")}</Link>
-                </li>
-              </ul>
-            </li>
-
-            <li>
-              <Link to="/#">
-
-                <i className="bx bx-briefcase-alt"></i>
-                <span key="t-jobs">{props.t("Jobs")}</span>
-              </Link>
-              <ul className="sub-menu">
-                <li>
-                  <Link to="#">{props.t("Job List")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Job Grid")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Apply Job")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Job Details")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Jobs Categories")}</Link>
-                </li>
-                <li>
-                  <Link to="/#" className="has-arrow">
-                    Candidate
-                  </Link>
-                  <ul className="sub-menu" aria-expanded="true">
-                    <li>
-                      <Link to="#">{props.t("List")}</Link>
-                    </li>
-                    <li>
-                      <Link to="#">{props.t("Overview")}</Link>
-                    </li>
-                  </ul>
-                </li>
-              </ul>
-            </li>
-
-            <li className="menu-title">Pages</li>
-            <li>
-              <Link to="/#" className="has-arrow ">
-                <i className="bx bx-user-circle"></i>
-                <span>{props.t("Authentication")}</span>
-              </Link>
-              <ul className="sub-menu">
-                <li>
-                  <Link to="#">{props.t("Login")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Login 2")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Register")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Register 2")}</Link>
-                </li>
-                <li>
-                  <Link to="#">
-                    {props.t("Recover Password")}
-                  </Link>
-                </li>
-                <li>
-                  <Link to="#">
-                    {props.t("Recover Password 2")}
-                  </Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Lock Screen")}</Link>
-                </li>
-                <li>
-                  <Link to="#">
-                    {props.t("Lock Screen 2")}
-                  </Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Confirm Mail")}</Link>
-                </li>
-                <li>
-                  <Link to="#">
-                    {props.t("Confirm Mail 2")}
-                  </Link>
-                </li>
-                <li>
-                  <Link to="#">
-                    {props.t("Email Verification")}
-                  </Link>
-                </li>
-                <li>
-                  <Link to="#">
-                    {props.t("Email Verification 2")}
-                  </Link>
-                </li>
-                <li>
-                  <Link to="#">
-                    {props.t("Two Step Verification")}
-                  </Link>
-                </li>
-                <li>
-                  <Link to="#">
-                    {props.t("Two Step Verification 2")}
-                  </Link>
-                </li>
-              </ul>
+              <Link to="/address"><i className="bx bx-map"></i> Address</Link>
             </li>
             <li>
-              <Link to="/#" className="has-arrow ">
-                <i className="bx bx-file"></i>
-                <span>{props.t("Utility")}</span>
-              </Link>
-              <ul className="sub-menu" aria-expanded="false">
-                <li>
-                  <Link to="#">{props.t("Starter Page")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Maintenance")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Coming Soon")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Timeline")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("FAQs")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Pricing")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Error 404")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Error 500")}</Link>
-                </li>
-              </ul>
+              <Link to="/banner"><i className="bx bx-image"></i> Banner</Link>
             </li>
-
-            <li className="menu-title">{props.t("Components")}</li>
-
             <li>
-              <Link to="/#" className="has-arrow ">
-                <i className="bx bx-tone"></i>
-                <span>{props.t("UI Elements")}</span>
-              </Link>
-              <ul className="sub-menu" aria-expanded="false">
-                <li>
-                  <Link to="#">{props.t("Alerts")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Buttons")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Cards")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Carousel")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Dropdowns")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Grid")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Images")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Lightbox")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Modals")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("OffCanvas")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Range Slider")}</Link>
-                </li>
-                <li>
-                  <Link to="#">
-                    {props.t("Session Timeout")}
-                  </Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Progress Bars")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Placeholders")}</Link>
-                </li>
-                <li>
-                  <Link to="#">
-                    {props.t("Tabs & Accordions")}
-                  </Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Typography")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Toasts")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Video")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("General")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Colors")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Rating")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Notifications")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Utilities")}</Link>
-                </li>
-              </ul>
+              <Link to="/cart"><i className="bx bx-cart"></i> Cart</Link>
             </li>
-
             <li>
-              <Link to="/#" className="">
-                <i className="bx bxs-eraser"></i>
-                <span className="badge rounded-pill bg-danger float-end">
-                  10
-                </span>
-                <span>{props.t("Forms")}</span>
-              </Link>
-              <ul className="sub-menu" aria-expanded="false">
-                <li>
-                  <Link to="#">{props.t("Form Elements")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Form Layouts")}</Link>
-                </li>
-                <li>
-                  <Link to="#">
-                    {props.t("Form Validation")}
-                  </Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Form Advanced")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Form Editors")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Form File Upload")} </Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Form Repeater")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Form Wizard")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Form Mask")}</Link>
-                </li>
-              </ul>
+              <Link to="/colors"><i className="bx bx-palette"></i> Colors</Link>
             </li>
-
             <li>
-              <Link to="/#" className="has-arrow ">
-                <i className="bx bx-list-ul"></i>
-                <span>{props.t("Tables")}</span>
-              </Link>
-              <ul className="sub-menu" aria-expanded="false">
-                <li>
-                  <Link to="#">{props.t("Basic Tables")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Data Tables")}</Link>
-                </li>
-                {/* <li>
-                  <Link to="/tables-responsive">
-                    {props.t("Responsive Table")}
-                  </Link>
-                </li> */}
-                {/* <li>
-                  <Link to="/tables-dragndrop">
-                    {props.t("Drag & Drop Table")}
-                  </Link>
-                </li> */}
-              </ul>
+              <Link to="/contact-us"><i className="bx bx-envelope"></i> Contact Us</Link>
             </li>
-
             <li>
-              <Link to="/#" className="has-arrow ">
-                <i className="bx bxs-bar-chart-alt-2"></i>
-                <span>{props.t("Charts")}</span>
-              </Link>
-
-              <ul className="sub-menu" aria-expanded="false">
-                <li>
-                  <Link to="#">{props.t("Apex charts")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("E Chart")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Chartjs Chart")}</Link>
-                </li>
-
-                <li>
-                  <Link to="#">{props.t("Knob Charts")}</Link>
-                </li>
-                <li>
-                  <Link to="#">
-                    {props.t("Sparkline Chart")}
-                  </Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Re Chart")}</Link>
-                </li>
-              </ul>
+              <Link to="/coupon"><i className="bx bx-gift"></i> Coupon</Link>
             </li>
-
             <li>
-              <Link to="/#" className="has-arrow ">
-                <i className="bx bx-aperture"></i>
-                <span>{props.t("Icons")}</span>
-              </Link>
-              <ul className="sub-menu" aria-expanded="false">
-                <li>
-                  <Link to="#">{props.t("Boxicons")}</Link>
-                </li>
-                <li>
-                  <Link to="#">
-                    {props.t("Material Design")}
-                  </Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Dripicons")}</Link>
-                </li>
-                <li>
-                  <Link to="#">{props.t("Font awesome")}</Link>
-                </li>
-              </ul>
+              <Link to="/dimension"><i className="bx bx-cube"></i> Dimension</Link>
             </li>
-
             <li>
-              <Link to="/#" className="has-arrow ">
-                <i className="bx bx-map"></i>
-                <span>{props.t("Maps")}</span>
-              </Link>
-              <ul className="sub-menu" aria-expanded="false">
-                <li>
-                  <Link to="#">{props.t("Google Maps")}</Link>
-                </li>
-              </ul>
+              <Link to="/frame-width"><i className="bx bx-ruler"></i> Frame Width</Link>
             </li>
-
             <li>
-              <Link to="/#" className="has-arrow ">
-                <i className="bx bx-share-alt"></i>
-                <span>{props.t("Multi Level")}</span>
-              </Link>
-              <ul className="sub-menu" aria-expanded="true">
-                <li>
-                  <Link to="/#">{props.t("Level 1.1")}</Link>
-                </li>
-                <li>
-                  <Link to="/#" className="has-arrow">
-                    {props.t("Level 1.2")}
-                  </Link>
-                  <ul className="sub-menu" aria-expanded="true">
-                    <li>
-                      <Link to="/#">{props.t("Level 2.1")}</Link>
-                    </li>
-                    <li>
-                      <Link to="/#">{props.t("Level 2.2")}</Link>
-                    </li>
-                  </ul>
-                </li>
-              </ul>
+              <Link to="/gender"><i className="bx bx-male-female"></i> Gender</Link>
+            </li>
+            <li>
+              <Link to="/lens-material"><i className="bx bx-glasses-alt"></i> Lens Material</Link>
+            </li>
+            <li>
+              <Link to="/lens-pack"><i className="bx bx-package"></i> Lens Pack</Link>
+            </li>
+            <li>
+              <Link to="/lens-tint"><i className="bx bx-paint"></i> Lens Tint</Link>
+            </li>
+            <li>
+              <Link to="/lens-type"><i className="bx bx-glasses"></i> Lens Type</Link>
+            </li>
+            <li>
+              <Link to="/material"><i className="bx bx-layer"></i> Material</Link>
+            </li>
+            <li>
+              <Link to="/membership"><i className="bx bx-id-card"></i> Membership</Link>
+            </li>
+            <li>
+              <Link to="/membership-plan"><i className="bx bx-list-plus"></i> Membership Plan</Link>
+            </li>
+            <li>
+              <Link to="/order"><i className="bx bx-shopping-bag"></i> Order</Link>
+            </li>
+            <li>
+              <Link to="/payment"><i className="bx bx-money"></i> Payment</Link>
+            </li>
+            <li>
+              <Link to="/power"><i className="bx bx-bulb"></i> Power</Link>
+            </li>
+            <li>
+              <Link to="/prescription-type"><i className="bx bx-file"></i> Prescription Type</Link>
+            </li>
+            <li>
+              <Link to="/privacy-policy"><i className="bx bx-lock"></i> Privacy Policy</Link>
+            </li>
+            <li>
+              <Link to="/product"><i className="bx bx-store"></i> Product</Link>
+            </li>
+            <li>
+              <Link to="/product-type"><i className="bx bx-purchase-tag"></i> Product Type</Link>
+            </li>
+            <li>
+              <Link to="/rating-review"><i className="bx bx-star"></i> Rating-Review</Link>
+            </li>
+            <li>
+              <Link to="/return-policy"><i className="bx bx-revision"></i> Return Policy</Link>
+            </li>
+            <li>
+              <Link to="/shape"><i className="bx bx-shape-circle"></i> Shape</Link>
+            </li>
+            <li>
+              <Link to="/shiprocket"><i className="bx bx-rocket"></i> Shiprocket</Link>
+            </li>
+            <li>
+              <Link to="/term"><i className="bx bx-file-blank"></i> Term</Link>
+            </li>
+            <li>
+              <Link to="/user"><i className="bx bx-user"></i> User</Link>
+            </li>
+            <li>
+              <Link to="/weight-group"><i className="bx bx-dumbbell"></i> Weight Group</Link>
+            </li>
+            <li>
+              <Link to="/wishlist"><i className="bx bx-heart"></i> Wishlist</Link>
             </li>
           </ul>
         </div>
