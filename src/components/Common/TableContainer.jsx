@@ -14,6 +14,9 @@ import {
 import { rankItem } from '@tanstack/match-sorter-utils';
 import JobListGlobalFilter from "./GlobalSearchFilter";
 
+// Import datatables styles
+import '../../assets/scss/datatables.scss';
+
 // Column Filter
 const Filter = ({
   column
@@ -124,13 +127,8 @@ const TableContainer = ({
     setPageIndex,
     nextPage,
     previousPage,
-    // setPageSize,
     getState
   } = table;
-
-  // useEffect(() => {
-  //   Number(customPageSize) && setPageSize(Number(customPageSize));
-  // }, [customPageSize, setPageSize]);
 
   return (
     <Fragment>
@@ -172,65 +170,60 @@ const TableContainer = ({
       </Row>
 
       <div className={divClassName ? divClassName : "table-responsive"}>
-        <Table hover className={tableClass} bordered={isBordered}>
+        <Table
+          hover
+          className={
+            (tableClass ? tableClass + " " : "") + "dataTable"
+          }
+          bordered={isBordered}
+        >
           <thead className={theadClass}>
             {getHeaderGroups().map(headerGroup => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map(header => {
+                  const isSorted = header.column.getIsSorted();
+                  let sortingClass = "";
+                  if (header.column.getCanSort()) {
+                    if (isSorted === "asc") sortingClass = "sorting_asc";
+                    else if (isSorted === "desc") sortingClass = "sorting_desc";
+                    else sortingClass = "sorting";
+                  }
                   return (
-                    <th key={header.id} colSpan={header.colSpan} className={`${header.column.columnDef.enableSorting ? "sorting sorting_desc" : ""}`}>
-                      {header.isPlaceholder ? null : (
-                        <React.Fragment>
-                          <div
-                            {...{
-                              className: header.column.getCanSort()
-                                ? 'cursor-pointer select-none'
-                                : '',
-                              onClick: header.column.getToggleSortingHandler(),
-                            }}
-                          >
-                            {flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
-                            {
-                              {
-                                asc: '',
-                                desc: '',
-                              }
-                              [header.column.getIsSorted()] ?? null}
-                          </div>
-                          {header.column.getCanFilter() ? (
-                            <div>
-                              <Filter column={header.column} table={table} />
-                            </div>
-                          ) : null}
-                        </React.Fragment>
+                    <th 
+                      key={header.id} 
+                      colSpan={header.colSpan}
+                      style={{ cursor: header.column.getCanSort() ? 'pointer' : 'default' }}
+                      className={sortingClass}
+                      onClick={header.column.getToggleSortingHandler()}
+                    >
+                      {flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
                       )}
+                      {header.column.getCanFilter() ? (
+                        <div>
+                          <Filter column={header.column} table={table} />
+                        </div>
+                      ) : null}
                     </th>
                   );
                 })}
               </tr>
             ))}
           </thead>
-
           <tbody>
-            {getRowModel().rows.map(row => {
-              return (
-                <tr key={row.id}>
-                  {row.getVisibleCells().map(cell => {
-                    return (
-                      <td key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </td>
-                    );
-                  })}
-                </tr>
-              );
-            })}
+            {getRowModel().rows.map(row => (
+              <tr key={row.id}>
+                {row.getVisibleCells().map(cell => (
+                  <td key={cell.id}>
+                    {flexRender(
+                      cell.column.columnDef.cell,
+                      cell.getContext()
+                    )}
+                  </td>
+                ))}
+              </tr>
+            ))}
           </tbody>
         </Table>
       </div>

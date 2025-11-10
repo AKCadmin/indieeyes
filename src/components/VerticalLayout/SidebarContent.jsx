@@ -134,7 +134,6 @@ const SidebarContent = (props) => {
     };
   }, []);
 
-  
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
     activeMenu();
@@ -158,106 +157,93 @@ const SidebarContent = (props) => {
             <li>
               <Link to="/dashboard">
                 <i className="bx bx-home-circle"></i>
-                <span>{props.t("Dashboards")}</span>
+                <span>{props.t("Dashboard")}</span>
               </Link>
             </li>
 
-            {/* New Menu Items */}
             <li>
-              <Link to="/about"><i className="bx bx-info-circle"></i> About</Link>
+              <Link to="/" className="has-arrow">
+                <i className="bx bx-store"></i>
+                <span>{props.t("Products")}</span>
+              </Link>
+              <ul className="sub-menu" aria-expanded="false">
+                <li><Link to="/products">Products</Link></li>
+                <li><Link to="/product-type">Product Types</Link></li>
+                <li><Link to="/colors">Colors</Link></li>
+                <li><Link to="/material">Materials</Link></li>
+                <li><Link to="/shape">Shapes</Link></li>
+                <li><Link to="/frame-width">Frame Width</Link></li>
+                <li><Link to="/dimension">Dimensions</Link></li>
+                <li><Link to="/weight-group">Weight Groups</Link></li>
+              </ul>
             </li>
+
             <li>
-              <Link to="/address"><i className="bx bx-map"></i> Address</Link>
+              <Link to="/" className="has-arrow">
+                <i className="bx bx-glasses"></i>
+                <span>{props.t("Lens")}</span>
+              </Link>
+              <ul className="sub-menu" aria-expanded="false">
+                <li><Link to="/lens-material">Lens Material</Link></li>
+                <li><Link to="/lens-pack">Lens Pack</Link></li>
+                <li><Link to="/lens-tint">Lens Tint</Link></li>
+                <li><Link to="/lens-type">Lens Type</Link></li>
+                <li><Link to="/power">Power</Link></li>
+                <li><Link to="/prescription-type">Prescription Type</Link></li>
+              </ul>
             </li>
+
             <li>
-              <Link to="/banner"><i className="bx bx-image"></i> Banner</Link>
+              <Link to="/" className="has-arrow">
+                <i className="bx bx-shopping-bag"></i>
+                <span>{props.t("Orders")}</span>
+              </Link>
+              <ul className="sub-menu" aria-expanded="false">
+                <li><Link to="/order">Orders</Link></li>
+                <li><Link to="/cart">Cart</Link></li>
+                <li><Link to="/wishlist">Wishlist</Link></li>
+                <li><Link to="/payment">Payments</Link></li>
+                <li><Link to="/shiprocket">Shiprocket</Link></li>
+              </ul>
             </li>
+
             <li>
-              <Link to="/cart"><i className="bx bx-cart"></i> Cart</Link>
+              <Link to="/" className="has-arrow">
+                <i className="bx bx-user-circle"></i>
+                <span>{props.t("Users")}</span>
+              </Link>
+              <ul className="sub-menu" aria-expanded="false">
+                <li><Link to="/user">Users</Link></li>
+                <li><Link to="/address">Addresses</Link></li>
+                <li><Link to="/membership">Membership</Link></li>
+                <li><Link to="/membership-plan">Membership Plans</Link></li>
+              </ul>
             </li>
+
             <li>
-              <Link to="/colors"><i className="bx bx-palette"></i> Colors</Link>
+              <Link to="/" className="has-arrow">
+                <i className="bx bx-file"></i>
+                <span>{props.t("Content")}</span>
+              </Link>
+              <ul className="sub-menu" aria-expanded="false">
+                <li><Link to="/about">About</Link></li>
+                <li><Link to="/banner">Banners</Link></li>
+                <li><Link to="/contact-us">Contact Us</Link></li>
+                <li><Link to="/privacy-policy">Privacy Policy</Link></li>
+                <li><Link to="/return-policy">Return Policy</Link></li>
+                <li><Link to="/term">Terms</Link></li>
+              </ul>
             </li>
+
             <li>
-              <Link to="/contact-us"><i className="bx bx-envelope"></i> Contact Us</Link>
-            </li>
-            <li>
-              <Link to="/coupon"><i className="bx bx-gift"></i> Coupon</Link>
-            </li>
-            <li>
-              <Link to="/dimension"><i className="bx bx-cube"></i> Dimension</Link>
-            </li>
-            <li>
-              <Link to="/frame-width"><i className="bx bx-ruler"></i> Frame Width</Link>
-            </li>
-            <li>
-              <Link to="/gender"><i className="bx bx-male-female"></i> Gender</Link>
-            </li>
-            <li>
-              <Link to="/lens-material"><i className="bx bx-glasses-alt"></i> Lens Material</Link>
-            </li>
-            <li>
-              <Link to="/lens-pack"><i className="bx bx-package"></i> Lens Pack</Link>
-            </li>
-            <li>
-              <Link to="/lens-tint"><i className="bx bx-paint"></i> Lens Tint</Link>
-            </li>
-            <li>
-              <Link to="/lens-type"><i className="bx bx-glasses"></i> Lens Type</Link>
-            </li>
-            <li>
-              <Link to="/material"><i className="bx bx-layer"></i> Material</Link>
-            </li>
-            <li>
-              <Link to="/membership"><i className="bx bx-id-card"></i> Membership</Link>
-            </li>
-            <li>
-              <Link to="/membership-plan"><i className="bx bx-list-plus"></i> Membership Plan</Link>
-            </li>
-            <li>
-              <Link to="/order"><i className="bx bx-shopping-bag"></i> Order</Link>
-            </li>
-            <li>
-              <Link to="/payment"><i className="bx bx-money"></i> Payment</Link>
-            </li>
-            <li>
-              <Link to="/power"><i className="bx bx-bulb"></i> Power</Link>
-            </li>
-            <li>
-              <Link to="/prescription-type"><i className="bx bx-file"></i> Prescription Type</Link>
-            </li>
-            <li>
-              <Link to="/privacy-policy"><i className="bx bx-lock"></i> Privacy Policy</Link>
-            </li>
-            <li>
-              <Link to="/product"><i className="bx bx-store"></i> Product</Link>
-            </li>
-            <li>
-              <Link to="/product-type"><i className="bx bx-purchase-tag"></i> Product Type</Link>
-            </li>
-            <li>
-              <Link to="/rating-review"><i className="bx bx-star"></i> Rating-Review</Link>
-            </li>
-            <li>
-              <Link to="/return-policy"><i className="bx bx-revision"></i> Return Policy</Link>
-            </li>
-            <li>
-              <Link to="/shape"><i className="bx bx-shape-circle"></i> Shape</Link>
-            </li>
-            <li>
-              <Link to="/shiprocket"><i className="bx bx-rocket"></i> Shiprocket</Link>
-            </li>
-            <li>
-              <Link to="/term"><i className="bx bx-file-blank"></i> Term</Link>
-            </li>
-            <li>
-              <Link to="/user"><i className="bx bx-user"></i> User</Link>
-            </li>
-            <li>
-              <Link to="/weight-group"><i className="bx bx-dumbbell"></i> Weight Group</Link>
-            </li>
-            <li>
-              <Link to="/wishlist"><i className="bx bx-heart"></i> Wishlist</Link>
+              <Link to="/" className="has-arrow">
+                <i className="bx bx-gift"></i>
+                <span>{props.t("Offers")}</span>
+              </Link>
+              <ul className="sub-menu" aria-expanded="false">
+                <li><Link to="/coupon">Coupons</Link></li>
+                <li><Link to="/rating-review">Ratings & Reviews</Link></li>
+              </ul>
             </li>
           </ul>
         </div>

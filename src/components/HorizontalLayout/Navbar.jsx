@@ -189,7 +189,7 @@ const Navbar = (props) => {
                   <Link to="/privacy-policy" className="nav-link">Privacy Policy</Link>
                 </li>
                 <li className="nav-item">
-                  <Link to="/product" className="nav-link">Product</Link>
+                  <Link to="/products" className="nav-link">Product</Link>
                 </li>
                 <li className="nav-item">
                   <Link to="/product-type" className="nav-link">Product Type</Link>

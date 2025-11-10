@@ -6,12 +6,14 @@ import { useFormik } from "formik";
 import Select from "react-select"
 
 //Import Breadcrumb
-import Breadcrumbs from "../../components/Common/Breadcrumb";
+import Breadcrumbs from "../../../components/Common/Breadcrumb";
+import { useNavigate } from "react-router-dom";
 
-const EcommerenceAddProduct = () => {
+const AddProduct = () => {
 
   //meta title
   document.title = "Add Product | Skote - Vite React Admin & Dashboard Template";
+  const navigate = useNavigate();
 
   const [selectedFiles, setselectedFiles] = useState([])
 
@@ -94,6 +96,13 @@ const EcommerenceAddProduct = () => {
     <React.Fragment>
       <div className="page-content">
         <Container fluid>
+           <Row className="mb-3">
+            <Col>
+              <Button color="secondary" onClick={() => navigate(-1)}>
+                <i className="fas fa-arrow-left me-2"></i> Back
+              </Button>
+            </Col>
+          </Row>
           {/* Render Breadcrumb */}
           <Breadcrumbs title="Ecommerce" breadcrumbItem="Add Product" />
 
@@ -379,4 +388,4 @@ const EcommerenceAddProduct = () => {
   )
 }
 
-export default EcommerenceAddProduct
+export default AddProduct
