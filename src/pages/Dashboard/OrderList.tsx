@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import PropTypes from "prop-types";
 import {
   Card,
@@ -14,10 +14,37 @@ import {
   Table,
 } from "reactstrap";
 import { Link } from "react-router-dom";
+import { apiClient1, apiHandler } from "../../utils/api-handler";
+import { DASHBOARD_API } from "../../utils/url-helper";
+import { toast } from "react-toastify";
 
 const OrderList = () => {
   const [filterType, setFilterType] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
+  const [statsData, setStatsData] = useState({
+    total_orders: 0,
+    delivered: 0,
+    processing: 0,
+    total_revenue: "0.00",
+  });
+
+  useEffect(() => {
+    const statsDataFunction = async () => {
+      try {
+        const response = await apiHandler.get(apiClient1, DASHBOARD_API);
+
+        if (response.success && response.data?.summary) {
+          setStatsData(response.data.summary);
+        } else {
+          throw new Error(response.message || "Invalid stats data format");
+        }
+      } catch (err: any) {
+        console.error("Error fetching stats:", err);
+        toast.error("Error fetching stats: " + err.message);
+      }
+    };
+    statsDataFunction();
+  }, []);
 
   // Sample order data
   const orderData = [
@@ -80,17 +107,23 @@ const OrderList = () => {
       case "week":
         const weekAgo = new Date();
         weekAgo.setDate(currentDate.getDate() - 7);
-        filtered = filtered.filter(order => new Date(order.orderDate) >= weekAgo);
+        filtered = filtered.filter(
+          (order) => new Date(order.orderDate) >= weekAgo
+        );
         break;
       case "month":
         const monthAgo = new Date();
         monthAgo.setMonth(currentDate.getMonth() - 1);
-        filtered = filtered.filter(order => new Date(order.orderDate) >= monthAgo);
+        filtered = filtered.filter(
+          (order) => new Date(order.orderDate) >= monthAgo
+        );
         break;
       case "year":
         const yearAgo = new Date();
         yearAgo.setFullYear(currentDate.getFullYear() - 1);
-        filtered = filtered.filter(order => new Date(order.orderDate) >= yearAgo);
+        filtered = filtered.filter(
+          (order) => new Date(order.orderDate) >= yearAgo
+        );
         break;
       default:
         break;
@@ -98,9 +131,10 @@ const OrderList = () => {
 
     // Apply search filter
     if (searchTerm) {
-      filtered = filtered.filter(order =>
-        order.orderId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        order.customer.toLowerCase().includes(searchTerm.toLowerCase())
+      filtered = filtered.filter(
+        (order) =>
+          order.orderId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          order.customer.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
@@ -137,15 +171,15 @@ const OrderList = () => {
 
   const filteredData = getFilteredData();
 
-  // Calculate stats
+  // Calculate stats from API data
   const stats = useMemo(() => {
     return {
-      total: filteredData.length,
-      delivered: filteredData.filter(o => o.status === "Delivered").length,
-      processing: filteredData.filter(o => o.status === "Processing" || o.status === "Shipped").length,
-      revenue: filteredData.reduce((sum, o) => sum + parseFloat(o.total.replace('$', '')), 0).toFixed(2),
+      total: parseInt(statsData.total_orders) || 0,
+      delivered: parseInt(statsData.delivered) || 0,
+      processing: parseInt(statsData.processing) || 0,
+      revenue: parseFloat(statsData.total_revenue) || 0,
     };
-  }, [filteredData]);
+  }, [statsData]);
 
   return (
     <div className="page-content">
@@ -157,7 +191,9 @@ const OrderList = () => {
               <h4 className="mb-0 font-size-18">Order Management</h4>
               <div className="page-title-right">
                 <ol className="breadcrumb m-0">
-                  <li className="breadcrumb-item"><Link to="/">Dashboard</Link></li>
+                  <li className="breadcrumb-item">
+                    <Link to="/">Dashboard</Link>
+                  </li>
                   <li className="breadcrumb-item active">Orders</li>
                 </ol>
               </div>
@@ -227,7 +263,7 @@ const OrderList = () => {
                 <div className="d-flex">
                   <div className="flex-grow-1">
                     <p className="text-muted fw-medium mb-2">Total Revenue</p>
-                    <h4 className="mb-0">${stats.revenue}</h4>
+                    <h4 className="mb-0">₹{stats.revenue.toFixed(2)}</h4>
                   </div>
                   <div className="avatar-sm rounded-circle bg-warning align-self-center mini-stat-icon">
                     <span className="avatar-title rounded-circle bg-warning">
@@ -322,16 +358,21 @@ const OrderList = () => {
                         </td>
                         <td>{order.customer}</td>
                         <td>
-                          {new Date(order.orderDate).toLocaleDateString('en-US', {
-                            year: 'numeric',
-                            month: 'short',
-                            day: 'numeric'
-                          })}
+                          {new Date(order.orderDate).toLocaleDateString(
+                            "en-US",
+                            {
+                              year: "numeric",
+                              month: "short",
+                              day: "numeric",
+                            }
+                          )}
                         </td>
                         <td className="fw-semibold">{order.total}</td>
                         <td>
                           <Badge
-                            className={`font-size-11 badge-soft-${getStatusColor(order.status)}`}
+                            className={`font-size-11 badge-soft-${getStatusColor(
+                              order.status
+                            )}`}
                             color={getStatusColor(order.status)}
                             pill
                           >
@@ -340,7 +381,9 @@ const OrderList = () => {
                         </td>
                         <td>
                           <Badge
-                            className={`font-size-11 badge-soft-${getPaymentColor(order.paymentStatus)}`}
+                            className={`font-size-11 badge-soft-${getPaymentColor(
+                              order.paymentStatus
+                            )}`}
                             color={getPaymentColor(order.paymentStatus)}
                             pill
                           >
@@ -361,7 +404,9 @@ const OrderList = () => {
                         <div className="text-muted">
                           <i className="bx bx-package display-4 d-block mb-3"></i>
                           <h5 className="mb-1">No orders found</h5>
-                          <p className="mb-0">Try adjusting your filters or search terms</p>
+                          <p className="mb-0">
+                            Try adjusting your filters or search terms
+                          </p>
                         </div>
                       </td>
                     </tr>

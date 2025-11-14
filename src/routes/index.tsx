@@ -9,7 +9,7 @@ import ForgetPwd from "../pages/Authentication/ForgetPassword";
 
 // // Dashboard
 import Dashboard from "../pages/Dashboard/index";
-import EcommerceOrder from "../pages/Ecommerce/EcommerceOrders";
+import EcommerceOrder from "../pages/Orders/Orders";
 import ProductType from "../pages/Products/ProductTypes/ProductType";
 import Colors from "../pages/Products/Colors/Colors";
 import AddColor from "../pages/Products/Colors/AddColor";
@@ -32,6 +32,12 @@ import Membership from "../pages/Users/Membership/Membership";
 import AddMembership from "../pages/Users/Membership/AddMembership";
 import MembershipPlan from "../pages/Users/MembershipPlan/MembershipPlan";
 import AddMembershipPlan from "../pages/Users/MembershipPlan/AddMembershipPlan";
+import User from "../pages/Users/User/User";
+import AddUser from "../pages/Users/User/AddUser";
+import Coupon from "../pages/Offers/Coupon/Coupon";
+import AddCoupon from "../pages/Offers/Coupon/AddCoupon";
+import RatingReview from "../pages/Offers/RatingReview/RatingReview";
+import AddRatingReview from "../pages/Offers/RatingReview/AddRatingReview";
 
 const authProtectedRoutes = [
   { path: "/dashboard", component: <Dashboard /> },
@@ -69,6 +75,15 @@ const authProtectedRoutes = [
   { path: "/membership-plan", component: <MembershipPlan /> },
   { path: "/add-membership-plan", component: <AddMembershipPlan /> },
   { path: "/edit-membership-plan/:id", component: <AddMembershipPlan /> },
+  { path: "/user", component: <User /> },
+  { path: "/add-user", component: <AddUser /> },
+  { path: "/edit-user/:id", component: <AddUser /> },
+  { path: "/coupon", component: <Coupon /> },
+  { path: "/add-coupon", component: <AddCoupon /> },
+  { path: "/edit-coupon/:id", component: <AddCoupon /> },
+  { path: "/rating-review", component: <RatingReview /> },
+  { path: "/add-rating-review", component: <AddRatingReview /> },
+  { path: "/edit-rating-review/:id", component: <AddRatingReview /> },
 
   //   // this route should be at the end of all other routes
   //   // eslint-disable-next-line react/display-name

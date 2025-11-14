@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import withRouter from "../../components/Common/withRouter";
 
 import { Badge, Button, Card, CardBody } from "reactstrap";
-import EcommerceOrdersModal from "../Ecommerce/EcommerceOrders/EcommerceOrdersModal";
+import EcommerceOrdersModal from "../Orders/Orders/AddOrders";
 
 import TableContainer from "../../components/Common/TableContainer";
 import { latestTransaction } from "../../common/data/dashboard";
