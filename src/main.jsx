@@ -7,12 +7,15 @@ import "./i18n"
 import { Provider } from 'react-redux'
 import store from './store/index.js'
 import 'boxicons/css/boxicons.min.css';
+import { ToastContainer } from "react-toastify";
+
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.Fragment>
     <Provider store={store}>
       <BrowserRouter>
         <App />
+        <ToastContainer />
       </BrowserRouter>
     </Provider>
   </React.Fragment>,

@@ -1,8 +1,15 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useEffect, useState } from "react";
 import PropTypes from 'prop-types';
+import { apiClient1, apiHandler } from "../../utils/api-handler";
+import { PRODUCTS_API } from "../../utils/url-helper";
+import { toast } from "react-toastify";
+import { ButtonGroup, Button, Row, Col } from "reactstrap";
 import TableContainer from '../../components/Common/TableContainer';
 
 const ProductList = () => {
+    const [products, setProducts] = useState([]);
+    const [filterType, setFilterType] = useState("all");
+
     const columns = useMemo(
         () => [
             {
@@ -13,19 +20,19 @@ const ProductList = () => {
             },
             {
                 header: 'Category',
-                accessorKey: 'position',
+                accessorKey: 'category',
                 enableColumnFilter: false,
                 enableSorting: true,
             },
             {
                 header: 'Price',
-                accessorKey: 'salary',
+                accessorKey: 'price',
                 enableColumnFilter: false,
                 enableSorting: true,
             },
             {
                 header: 'Stock',
-                accessorKey: 'age',
+                accessorKey: 'inventory',
                 enableColumnFilter: false,
                 enableSorting: true,
             },
@@ -33,29 +40,122 @@ const ProductList = () => {
         []
     );
 
-    const data = [
-        {
-            name: "Laptop Pro X1",
-            position: "Electronics",
-            age: 45,
-            salary: "$1,200"
-        },
-        {
-            name: "Wireless Mouse",
-            position: "Accessories",
-            age: 120,
-            salary: "$25"
-        },
-        // Add more product data as needed
-    ];
+    // Fetch products data
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const response = await apiHandler.get(apiClient1, PRODUCTS_API);
+
+                if (response.success && Array.isArray(response.data)) {
+                    const formattedProducts = response.data.map((product) => ({
+                        id: product.id,
+                        name: product.name,
+                        category: product.category,
+                        price: `₹${parseFloat(product.price).toFixed(2)}`,
+                        inventory: product.inventory,
+                        created_at: new Date(product.created_at),
+                    }));
+                    setProducts(formattedProducts);
+                } else {
+                    throw new Error(response.message || "Invalid products data format");
+                }
+            } catch (err: any) {
+                console.error("Error fetching products:", err);
+                toast.error("Error fetching products: " + err.message);
+            }
+        };
+        fetchProducts();
+    }, []);
+
+    // Filter data based on time period
+    const getFilteredData = () => {
+        const currentDate = new Date();
+        let filtered = [...products];
+
+        switch (filterType) {
+            case "week":
+                const weekAgo = new Date();
+                weekAgo.setDate(currentDate.getDate() - 7);
+                filtered = filtered.filter(
+                    (product) => product.created_at >= weekAgo
+                );
+                break;
+            case "month":
+                const monthAgo = new Date();
+                monthAgo.setMonth(currentDate.getMonth() - 1);
+                filtered = filtered.filter(
+                    (product) => product.created_at >= monthAgo
+                );
+                break;
+            case "year":
+                const yearAgo = new Date();
+                yearAgo.setFullYear(currentDate.getFullYear() - 1);
+                filtered = filtered.filter(
+                    (product) => product.created_at >= yearAgo
+                );
+                break;
+            default:
+                break;
+        }
+
+        return filtered;
+    };
+
+    const filteredData = getFilteredData();
 
     return (
         <div className="card">
             <div className="card-body">
-                <h4 className="card-title mb-4">Product List</h4>
+                <Row className="mb-4">
+                    <Col md={6}>
+                        <h4 className="card-title mb-0">Product List</h4>
+                    </Col>
+                    <Col md={6}>
+                        <div className="d-flex flex-wrap gap-2 justify-content-md-end">
+                            <ButtonGroup>
+                                <Button
+                                    color={filterType === "all" ? "primary" : "dark"}
+                                    onClick={() => setFilterType("all")}
+                                    outline={filterType !== "all"}
+                                    size="sm"
+                                >
+                                    <i className="bx bx-globe me-1"></i>
+                                    All Time
+                                </Button>
+                                <Button
+                                    color={filterType === "week" ? "primary" : "dark"}
+                                    onClick={() => setFilterType("week")}
+                                    outline={filterType !== "week"}
+                                    size="sm"
+                                >
+                                    <i className="bx bx-calendar me-1"></i>
+                                    Week
+                                </Button>
+                                <Button
+                                    color={filterType === "month" ? "primary" : "dark"}
+                                    onClick={() => setFilterType("month")}
+                                    outline={filterType !== "month"}
+                                    size="sm"
+                                >
+                                    <i className="bx bx-calendar-check me-1"></i>
+                                    Month
+                                </Button>
+                                <Button
+                                    color={filterType === "year" ? "primary" : "dark"}
+                                    onClick={() => setFilterType("year")}
+                                    outline={filterType !== "year"}
+                                    size="sm"
+                                >
+                                    <i className="bx bx-calendar-event me-1"></i>
+                                    Year
+                                </Button>
+                            </ButtonGroup>
+                        </div>
+                    </Col>
+                </Row>
                 <TableContainer
                     columns={columns}
-                    data={data || []}
+                    data={filteredData || []}
                     isGlobalFilter={true}
                     isPagination={true}
                     SearchPlaceholder="Search products..."

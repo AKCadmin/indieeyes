@@ -15,12 +15,15 @@ import {
 } from "reactstrap";
 import { Link } from "react-router-dom";
 import { apiClient1, apiHandler } from "../../utils/api-handler";
-import { DASHBOARD_API } from "../../utils/url-helper";
+import { DASHBOARD_API, ORDERS_API } from "../../utils/url-helper";
 import { toast } from "react-toastify";
 
 const OrderList = () => {
   const [filterType, setFilterType] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
+  const [orders, setOrders] = useState([]);
+  const [sortColumn, setSortColumn] = useState(null);
+  const [sortDirection, setSortDirection] = useState("asc");
   const [statsData, setStatsData] = useState({
     total_orders: 0,
     delivered: 0,
@@ -28,6 +31,7 @@ const OrderList = () => {
     total_revenue: "0.00",
   });
 
+  // Fetch stats data
   useEffect(() => {
     const statsDataFunction = async () => {
       try {
@@ -46,62 +50,37 @@ const OrderList = () => {
     statsDataFunction();
   }, []);
 
-  // Sample order data
-  const orderData = [
-    {
-      orderId: "#SK2541",
-      customer: "John Doe",
-      orderDate: "2024-10-15",
-      total: "$123.45",
-      status: "Delivered",
-      paymentStatus: "Paid",
-    },
-    {
-      orderId: "#SK2542",
-      customer: "Jane Smith",
-      orderDate: "2024-10-12",
-      total: "$256.80",
-      status: "Processing",
-      paymentStatus: "Paid",
-    },
-    {
-      orderId: "#SK2543",
-      customer: "Bob Johnson",
-      orderDate: "2024-10-10",
-      total: "$89.99",
-      status: "Delivered",
-      paymentStatus: "Paid",
-    },
-    {
-      orderId: "#SK2544",
-      customer: "Alice Williams",
-      orderDate: "2024-10-08",
-      total: "$456.20",
-      status: "Shipped",
-      paymentStatus: "Paid",
-    },
-    {
-      orderId: "#SK2545",
-      customer: "Charlie Brown",
-      orderDate: "2024-09-28",
-      total: "$178.50",
-      status: "Delivered",
-      paymentStatus: "Pending",
-    },
-    {
-      orderId: "#SK2546",
-      customer: "Diana Prince",
-      orderDate: "2024-09-15",
-      total: "$299.99",
-      status: "Cancelled",
-      paymentStatus: "Refunded",
-    },
-  ];
+  // Fetch orders data
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const response = await apiHandler.get(apiClient1, ORDERS_API);
+
+        if (response.success && Array.isArray(response.data)) {
+          const formattedOrders = response.data.map((order) => ({
+            orderId: order.order_id,
+            customer: `${order.first_name || ""} ${order.last_name || ""}`.trim() || "Unknown",
+            orderDate: order.order_date,
+            total: `₹${order.total}`,
+            status: order.status,
+            paymentStatus: order.payment_status,
+          }));
+          setOrders(formattedOrders);
+        } else {
+          throw new Error(response.message || "Invalid orders data format");
+        }
+      } catch (err: any) {
+        console.error("Error fetching orders:", err);
+        toast.error("Error fetching orders: " + err.message);
+      }
+    };
+    fetchOrders();
+  }, []);
 
   // Filter data based on time period
   const getFilteredData = () => {
     const currentDate = new Date();
-    let filtered = [...orderData];
+    let filtered = [...orders];
 
     switch (filterType) {
       case "week":
@@ -142,34 +121,67 @@ const OrderList = () => {
   };
 
   const getStatusColor = (status) => {
-    switch (status) {
-      case "Delivered":
-        return "success";
-      case "Processing":
-        return "info";
-      case "Shipped":
-        return "primary";
-      case "Cancelled":
-        return "danger";
-      default:
-        return "warning";
+    const statusLower = status.toLowerCase();
+    if (statusLower.includes("confirmed") || statusLower.includes("delivered")) {
+      return "success";
+    } else if (statusLower.includes("processing")) {
+      return "info";
+    } else if (statusLower.includes("shipped")) {
+      return "primary";
+    } else if (statusLower.includes("cancelled") || statusLower.includes("refunded")) {
+      return "danger";
     }
+    return "warning";
   };
 
   const getPaymentColor = (status) => {
-    switch (status) {
-      case "Paid":
-        return "success";
-      case "Pending":
-        return "warning";
-      case "Refunded":
-        return "secondary";
-      default:
-        return "danger";
+    const statusLower = status.toLowerCase();
+    if (statusLower.includes("success")) {
+      return "success";
+    } else if (statusLower.includes("pending")) {
+      return "warning";
+    } else if (statusLower.includes("refunded")) {
+      return "secondary";
+    }
+    return "danger";
+  };
+
+  const handleColumnSort = (column) => {
+    if (sortColumn === column) {
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+    } else {
+      setSortColumn(column);
+      setSortDirection("asc");
     }
   };
 
-  const filteredData = getFilteredData();
+  const getSortedData = () => {
+    let data = getFilteredData();
+
+    if (!sortColumn) return data;
+
+    return [...data].sort((a, b) => {
+      let aValue = a[sortColumn];
+      let bValue = b[sortColumn];
+
+      // Handle numeric and string comparisons
+      if (typeof aValue === "string") {
+        aValue = aValue.toLowerCase();
+        bValue = bValue.toLowerCase();
+      }
+
+      if (sortDirection === "asc") {
+        return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+      } else {
+        return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
+      }
+    });
+  };
+
+  const getSortIndicator = (column) => {
+    if (sortColumn !== column) return "";
+    return sortDirection === "asc" ? " ▲" : " ▼";
+  };
 
   // Calculate stats from API data
   const stats = useMemo(() => {
@@ -180,6 +192,8 @@ const OrderList = () => {
       revenue: parseFloat(statsData.total_revenue) || 0,
     };
   }, [statsData]);
+
+  const sortedData = getSortedData();
 
   return (
     <div className="page-content">
@@ -338,18 +352,48 @@ const OrderList = () => {
               <Table className="table table-hover table-nowrap table-centered mb-0">
                 <thead className="table-light">
                   <tr>
-                    <th>Order ID</th>
-                    <th>Customer</th>
-                    <th>Order Date</th>
-                    <th>Total</th>
-                    <th>Status</th>
-                    <th>Payment</th>
+                    <th
+                      style={{ cursor: "pointer", userSelect: "none" }}
+                      onClick={() => handleColumnSort("orderId")}
+                    >
+                      Order ID{getSortIndicator("orderId")}
+                    </th>
+                    <th
+                      style={{ cursor: "pointer", userSelect: "none" }}
+                      onClick={() => handleColumnSort("customer")}
+                    >
+                      Customer{getSortIndicator("customer")}
+                    </th>
+                    <th
+                      style={{ cursor: "pointer", userSelect: "none" }}
+                      onClick={() => handleColumnSort("orderDate")}
+                    >
+                      Order Date{getSortIndicator("orderDate")}
+                    </th>
+                    <th
+                      style={{ cursor: "pointer", userSelect: "none" }}
+                      onClick={() => handleColumnSort("total")}
+                    >
+                      Total{getSortIndicator("total")}
+                    </th>
+                    <th
+                      style={{ cursor: "pointer", userSelect: "none" }}
+                      onClick={() => handleColumnSort("status")}
+                    >
+                      Status{getSortIndicator("status")}
+                    </th>
+                    <th
+                      style={{ cursor: "pointer", userSelect: "none" }}
+                      onClick={() => handleColumnSort("paymentStatus")}
+                    >
+                      Payment{getSortIndicator("paymentStatus")}
+                    </th>
                     <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredData.length > 0 ? (
-                    filteredData.map((order, index) => (
+                  {sortedData.length > 0 ? (
+                    sortedData.map((order, index) => (
                       <tr key={index}>
                         <td>
                           <Link to="#" className="text-body fw-bold">

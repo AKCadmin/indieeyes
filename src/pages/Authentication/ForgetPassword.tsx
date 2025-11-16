@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import React from "react";
+import React, { useState } from "react";
 import {
   Row,
   Col,
@@ -12,19 +12,12 @@ import {
   Label,
   Form,
 } from "reactstrap";
-
-//redux
-import { useSelector, useDispatch } from "react-redux";
-import { createSelector } from "reselect";
 import { Link } from "react-router-dom";
 import withRouter from "../../components/Common/withRouter";
 
 // Formik Validation
 import * as Yup from "yup";
 import { useFormik } from "formik";
-
-// action
-import { userForgetPassword } from "/src/store/actions";
 
 // import images
 import profile from "../../assets/images/profile-img.png";
@@ -35,7 +28,8 @@ const ForgetPasswordPage = (props) => {
   //meta title
   document.title =
     "Forget Password | Skote - Vite React Admin & Dashboard Template";
-  const dispatch = useDispatch();
+  const [forgetError, setForgetError] = useState("");
+  const [forgetSuccessMsg, setForgetSuccessMsg] = useState("");
 
   const validation = useFormik({
     // enableReinitialize : use this flag when initial values needs to be changed
@@ -48,22 +42,16 @@ const ForgetPasswordPage = (props) => {
       email: Yup.string().required("Please Enter Your Email"),
     }),
     onSubmit: (values) => {
-      dispatch(userForgetPassword(values, props.history));
+      // Simulate password reset
+      if (values.email) {
+        setForgetSuccessMsg("Password reset link sent to your email.");
+        setForgetError("");
+      } else {
+        setForgetError("Email not found.");
+        setForgetSuccessMsg("");
+      }
     },
   });
-
-  const ForgotPasswordProperties = createSelector(
-    (state) => state.ForgetPassword,
-    (forgetPassword) => ({
-      forgetError: forgetPassword.forgetError,
-      forgetSuccessMsg: forgetPassword.forgetSuccessMsg,
-    })
-  );
-
-  const {
-    forgetError,
-    forgetSuccessMsg
-  } = useSelector(ForgotPasswordProperties);
 
   return (
     <React.Fragment>
@@ -118,16 +106,16 @@ const ForgetPasswordPage = (props) => {
                     </Link>
                   </div>
                   <div className="p-2">
-                    {forgetError && forgetError ? (
+                    {forgetError && (
                       <Alert color="danger" style={{ marginTop: "13px" }}>
                         {forgetError}
                       </Alert>
-                    ) : null}
-                    {forgetSuccessMsg ? (
+                    )}
+                    {forgetSuccessMsg && (
                       <Alert color="success" style={{ marginTop: "13px" }}>
                         {forgetSuccessMsg}
                       </Alert>
-                    ) : null}
+                    )}
 
                     <Form
                       className="form-horizontal"

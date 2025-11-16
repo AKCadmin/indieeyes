@@ -18,7 +18,7 @@ const handleRequest = async <T = any>(
   data?: any,
   config: RequestConfig = {}
 ): Promise<T> => {
-  const token = localStorage.getItem("access_token");
+  const token = localStorage.getItem("authToken");
 
   if (token) {
     config.headers = config.headers || {};

@@ -38,6 +38,7 @@ import Coupon from "../pages/Offers/Coupon/Coupon";
 import AddCoupon from "../pages/Offers/Coupon/AddCoupon";
 import RatingReview from "../pages/Offers/RatingReview/RatingReview";
 import AddRatingReview from "../pages/Offers/RatingReview/AddRatingReview";
+import UserProfile from "../pages/Authentication/user-profile";
 
 const authProtectedRoutes = [
   { path: "/dashboard", component: <Dashboard /> },
@@ -84,6 +85,7 @@ const authProtectedRoutes = [
   { path: "/rating-review", component: <RatingReview /> },
   { path: "/add-rating-review", component: <AddRatingReview /> },
   { path: "/edit-rating-review/:id", component: <AddRatingReview /> },
+  { path: "/profile", component: <UserProfile /> },
 
   //   // this route should be at the end of all other routes
   //   // eslint-disable-next-line react/display-name

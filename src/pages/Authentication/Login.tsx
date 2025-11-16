@@ -1,7 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
-import withRouter from "../../components/Common/withRouter";
+import { Link, useNavigate } from "react-router-dom";
 
 //redux
 import { useSelector, useDispatch } from "react-redux";
@@ -25,54 +24,65 @@ import {
 } from "reactstrap";
 
 // actions
-import { loginUser, socialLogin } from "/src/store/actions";
+import { apiClient1, apiHandler } from "../../utils/api-handler";
+import { LOGIN_API } from "../../utils/url-helper";
+import { toast } from "react-toastify";
 
 // import images
 import profile from "../../assets/images/profile-img.png";
 import logo from "../../assets/images/logo.svg";
 import lightlogo from "../../assets/images/logo-light.svg";
 
-const Login = (props) => {
+const Login = () => {
   //meta title
   document.title = "Login | Skote - Vite React Admin & Dashboard Template";
-  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const validation = useFormik({
     // enableReinitialize : use this flag when initial values needs to be changed
     enableReinitialize: true,
 
     initialValues: {
-      email: "admin@themesbrand.com" || "",
-      password: "123456" || "",
+      email: "romitkarmakar@gmail.com" || "",
+      password: "Sarahack@26" || "",
     },
     validationSchema: Yup.object({
       email: Yup.string().required("Please Enter Your Email"),
       password: Yup.string().required("Please Enter Your Password"),
     }),
-    onSubmit: (values) => {
-      dispatch(loginUser(values, props.router.navigate));
+    onSubmit: async (values) => {
+      setLoading(true);
+      try {
+        const response = await apiHandler.post(apiClient1, LOGIN_API, {
+          email: values.email,
+          password: values.password,
+        });
+
+        if (response.success && response.data?.token) {
+          // Store token in localStorage
+          localStorage.setItem("authToken", response.data.token);
+          localStorage.setItem("adminData", JSON.stringify(response.data.admin));
+          
+          toast.success(response.message || "Login successful!");
+          
+          // Redirect to dashboard
+          setTimeout(() => {
+            navigate("/dashboard");
+          }, 500);
+        } else {
+          throw new Error(response.message || "Login failed");
+        }
+      } catch (err: any) {
+        console.error("Login error:", err);
+        // Handle both API error responses and network errors
+        const errorMessage = err.response?.data?.message || err.message || "An error occurred during login";
+        toast.error(errorMessage);
+      } finally {
+        setLoading(false);
+      }
     },
   });
-
-  const LoginProperties = createSelector(
-    (state) => state.Login,
-    (login) => ({
-      error: login.error
-    })
-  );
-
-  const {
-    error
-  } = useSelector(LoginProperties);
-
-  const signIn = type => {
-    dispatch(socialLogin(type, props.router.navigate));
-  };
-
-  //for facebook and google authentication
-  const socialResponse = type => {
-    signIn(type);
-  };
 
   return (
     <React.Fragment>
@@ -135,7 +145,6 @@ const Login = (props) => {
                         return false;
                       }}
                     >
-                      {error ? <Alert color="danger">{error}</Alert> : null}
 
                       <div className="mb-3">
                         <Label className="form-label">Email</Label>
@@ -203,61 +212,10 @@ const Login = (props) => {
                         <button
                           className="btn btn-primary btn-block"
                           type="submit"
+                          disabled={loading}
                         >
-                          Log In
+                          {loading ? "Logging in..." : "Log In"}
                         </button>
-                      </div>
-
-                      <div className="mt-4 text-center">
-                        <h5 className="font-size-14 mb-3">Sign in with</h5>
-
-                        <ul className="list-inline">
-                          <li className="list-inline-item">
-                            <Link
-                              to="#"
-                              className="social-list-item bg-primary text-white border-primary"
-                              onClick={e => {
-                                e.preventDefault();
-                                socialResponse("facebook");
-                              }}
-                            >
-                              <i className="mdi mdi-facebook" />
-                            </Link>
-                          </li>
-                          {/*<li className="list-inline-item">*/}
-                          {/*  <TwitterLogin*/}
-                          {/*    loginUrl={*/}
-                          {/*      "http://localhost:4000/api/v1/auth/twitter"*/}
-                          {/*    }*/}
-                          {/*    onSuccess={this.twitterResponse}*/}
-                          {/*    onFailure={this.onFailure}*/}
-                          {/*    requestTokenUrl={*/}
-                          {/*      "http://localhost:4000/api/v1/auth/twitter/revers"*/}
-                          {/*    }*/}
-                          {/*    showIcon={false}*/}
-                          {/*    tag={"div"}*/}
-                          {/*  >*/}
-                          {/*    <a*/}
-                          {/*      href=""*/}
-                          {/*      className="social-list-item bg-info text-white border-info"*/}
-                          {/*    >*/}
-                          {/*      <i className="mdi mdi-twitter"/>*/}
-                          {/*    </a>*/}
-                          {/*  </TwitterLogin>*/}
-                          {/*</li>*/}
-                          <li className="list-inline-item">
-                            <Link
-                              to="#"
-                              className="social-list-item bg-danger text-white border-danger"
-                              onClick={e => {
-                                e.preventDefault();
-                                socialResponse("google");
-                              }}
-                            >
-                              <i className="mdi mdi-google" />
-                            </Link>
-                          </li>
-                        </ul>
                       </div>
 
                       <div className="mt-4 text-center">
@@ -291,7 +249,7 @@ const Login = (props) => {
   );
 };
 
-export default withRouter(Login);
+export default Login;
 
 Login.propTypes = {
   history: PropTypes.object,

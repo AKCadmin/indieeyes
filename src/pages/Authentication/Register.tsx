@@ -1,18 +1,12 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import { Row, Col, CardBody, Card, Alert, Container, Input, Label, Form, FormFeedback } from "reactstrap";
 
 // Formik Validation
 import * as Yup from "yup";
 import { useFormik } from "formik";
 
-// action
-import { registerUser, apiError } from "/src/store/actions";
-
 //redux
-import { useSelector, useDispatch } from "react-redux";
-import { createSelector } from "reselect";
-
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // import images
 import profileImg from "../../assets/images/profile-img.png";
@@ -21,8 +15,9 @@ import lightlogo from "../../assets/images/logo-light.svg";
 
 const Register = () => {
   document.title = "Register | Skote - Vite React Admin & Dashboard Template";
-
-  const dispatch = useDispatch();
+  const [success, setSuccess] = useState(false);
+  const [registrationError, setRegistrationError] = useState("");
+  const navigate = useNavigate();
 
   const validation = useFormik({
     // enableReinitialize : use this flag when initial values needs to be changed
@@ -39,28 +34,24 @@ const Register = () => {
       password: Yup.string().required("Please Enter Your Password"),
     }),
     onSubmit: (values) => {
-      dispatch(registerUser(values));
+      // Simulate registration logic
+      try {
+        localStorage.setItem("authUser", JSON.stringify({
+          email: values.email,
+          username: values.username,
+          uid: Date.now(),
+        }));
+        setSuccess(true);
+        setRegistrationError("");
+        setTimeout(() => {
+          navigate("/login");
+        }, 1500);
+      } catch (err) {
+        setRegistrationError("Registration failed. Please try again.");
+        setSuccess(false);
+      }
     }
   });
-
-  const AccountProperties = createSelector(
-    (state) => state.Account,
-    (account) => ({
-      user: account.user,
-      registrationError: account.registrationError,
-      // loading: account.loading,
-    })
-  );
-
-  const {
-    user,
-    registrationError,
-    // loading
-  } = useSelector(AccountProperties);
-
-  useEffect(() => {
-    dispatch(apiError(""));
-  }, []);
 
   return (
     <React.Fragment>
@@ -124,15 +115,14 @@ const Register = () => {
                         return false;
                       }}
                     >
-                      {user && user ? (
+                      {success && (
                         <Alert color="success">
                           Register User Successfully
                         </Alert>
-                      ) : null}
-
-                      {registrationError && registrationError ? (
+                      )}
+                      {registrationError && (
                         <Alert color="danger">{registrationError}</Alert>
-                      ) : null}
+                      )}
 
                       <div className="mb-3">
                         <Label className="form-label">Email</Label>
