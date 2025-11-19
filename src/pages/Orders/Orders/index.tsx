@@ -105,9 +105,22 @@ const EcommerceOrder = () => {
       toggle();
     },
   });
-  const [transaction, setTransaction] = useState("")
+  const [transaction, setTransaction] = useState<any | null>(null)
 
-  const toggleViewModal = () => setModal1(!modal1);
+  const toggleViewModal = (data = null) => {
+    // eslint-disable-next-line no-console
+    console.log('toggleViewModal called. modal1:', modal1, 'data:', data);
+    // If modal is open, close it and clear transaction
+    if (modal1) {
+      setModal1(false);
+      setTransaction(null);
+      return;
+    }
+
+    // If opening, set transaction first, then open modal
+    if (data) setTransaction(data);
+    setModal1(true);
+  };
 
   const dispatch = useDispatch();
 
@@ -287,8 +300,10 @@ const EcommerceOrder = () => {
               color="primary"
               className="btn-sm btn-rounded"
               onClick={() => {
-                const orderData = cellProps.row.original; toggleViewModal(orderData);
-                setTransaction(cellProps.row.original)
+                const orderData = cellProps.row.original;
+                // eslint-disable-next-line no-console
+                console.log('View Details clicked, orderData:', orderData);
+                toggleViewModal(orderData);
               }}
             >
               View Details

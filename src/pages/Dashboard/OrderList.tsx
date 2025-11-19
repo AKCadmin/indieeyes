@@ -1,5 +1,7 @@
+// @ts-nocheck
 import React, { useState, useMemo, useEffect } from "react";
 import PropTypes from "prop-types";
+import { useNavigate } from "react-router-dom";
 import {
   Card,
   CardBody,
@@ -31,6 +33,8 @@ const OrderList = () => {
     total_revenue: "0.00",
   });
 
+  const navigate = useNavigate();
+
   // Fetch stats data
   useEffect(() => {
     const statsDataFunction = async () => {
@@ -42,7 +46,7 @@ const OrderList = () => {
         } else {
           throw new Error(response.message || "Invalid stats data format");
         }
-      } catch (err: any) {
+      } catch (err) {
         console.error("Error fetching stats:", err);
         toast.error("Error fetching stats: " + err.message);
       }
@@ -59,7 +63,9 @@ const OrderList = () => {
         if (response.success && Array.isArray(response.data)) {
           const formattedOrders = response.data.map((order) => ({
             orderId: order.order_id,
-            customer: `${order.first_name || ""} ${order.last_name || ""}`.trim() || "Unknown",
+            customer:
+              `${order.first_name || ""} ${order.last_name || ""}`.trim() ||
+              "Unknown",
             orderDate: order.order_date,
             total: `₹${order.total}`,
             status: order.status,
@@ -69,7 +75,7 @@ const OrderList = () => {
         } else {
           throw new Error(response.message || "Invalid orders data format");
         }
-      } catch (err: any) {
+      } catch (err) {
         console.error("Error fetching orders:", err);
         toast.error("Error fetching orders: " + err.message);
       }
@@ -122,13 +128,19 @@ const OrderList = () => {
 
   const getStatusColor = (status) => {
     const statusLower = status.toLowerCase();
-    if (statusLower.includes("confirmed") || statusLower.includes("delivered")) {
+    if (
+      statusLower.includes("confirmed") ||
+      statusLower.includes("delivered")
+    ) {
       return "success";
     } else if (statusLower.includes("processing")) {
       return "info";
     } else if (statusLower.includes("shipped")) {
       return "primary";
-    } else if (statusLower.includes("cancelled") || statusLower.includes("refunded")) {
+    } else if (
+      statusLower.includes("cancelled") ||
+      statusLower.includes("refunded")
+    ) {
       return "danger";
     }
     return "warning";
@@ -183,7 +195,6 @@ const OrderList = () => {
     return sortDirection === "asc" ? " ▲" : " ▼";
   };
 
-  // Calculate stats from API data
   const stats = useMemo(() => {
     return {
       total: parseInt(statsData.total_orders) || 0,
@@ -435,7 +446,12 @@ const OrderList = () => {
                           </Badge>
                         </td>
                         <td>
-                          <Button size="sm" color="primary" outline>
+                          <Button
+                            size="sm"
+                            color="primary"
+                            outline
+                            onClick={() => navigate(`/order/${order.orderId}`)}
+                          >
                             <i className="bx bx-show me-1"></i>
                             View Details
                           </Button>

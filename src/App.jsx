@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import React from "react";
 
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { connect } from "react-redux";
 
 import { useSelector } from "react-redux";
@@ -72,6 +72,10 @@ const App = (props) => {
   return (
     <React.Fragment>
       <Routes>
+        {/* Redirect root to dashboard */}
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        {/* Catch-all -> dashboard */}
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
         {publicRoutes.map((route, idx) => (
           <Route
             path={route.path}
