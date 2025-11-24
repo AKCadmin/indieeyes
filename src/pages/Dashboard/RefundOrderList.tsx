@@ -11,11 +11,11 @@ import { toast } from "react-toastify";
 import TableContainer from "../../components/Common/TableContainer";
 import { Link } from "react-router-dom";
 
-const RefundOrders = () => {
+const RefundOrders = ({ filterType }) => {
   const [modal1, setModal1] = useState(false);
   const [transaction, setTransaction] = useState("");
   const [refunds, setRefunds] = useState([]);
-  const [filterType, setFilterType] = useState("all");
+  // const [filterType, setFilterType] = useState("all");
 
   // Fetch refunds data
   useEffect(() => {
@@ -210,46 +210,6 @@ const RefundOrders = () => {
               <div className="h4 card-title mb-0">Refund Orders</div>
             </Col>
             <Col md={6}>
-              <div className="d-flex flex-wrap gap-2 justify-content-md-end">
-                <ButtonGroup>
-                  <Button
-                    color={filterType === "all" ? "primary" : "dark"}
-                    onClick={() => setFilterType("all")}
-                    outline={filterType !== "all"}
-                    size="sm"
-                  >
-                    <i className="bx bx-globe me-1"></i>
-                    All Time
-                  </Button>
-                  <Button
-                    color={filterType === "week" ? "primary" : "dark"}
-                    onClick={() => setFilterType("week")}
-                    outline={filterType !== "week"}
-                    size="sm"
-                  >
-                    <i className="bx bx-calendar me-1"></i>
-                    Week
-                  </Button>
-                  <Button
-                    color={filterType === "month" ? "primary" : "dark"}
-                    onClick={() => setFilterType("month")}
-                    outline={filterType !== "month"}
-                    size="sm"
-                  >
-                    <i className="bx bx-calendar-check me-1"></i>
-                    Month
-                  </Button>
-                  <Button
-                    color={filterType === "year" ? "primary" : "dark"}
-                    onClick={() => setFilterType("year")}
-                    outline={filterType !== "year"}
-                    size="sm"
-                  >
-                    <i className="bx bx-calendar-event me-1"></i>
-                    Year
-                  </Button>
-                </ButtonGroup>
-              </div>
             </Col>
           </Row>
           <TableContainer
@@ -268,6 +228,7 @@ const RefundOrders = () => {
 
 RefundOrders.propTypes = {
   latestTransaction: PropTypes.array,
+  filterType: PropTypes.string,
 };
 
 export default withRouter(RefundOrders);

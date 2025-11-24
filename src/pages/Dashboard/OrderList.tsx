@@ -20,8 +20,8 @@ import { apiClient1, apiHandler } from "../../utils/api-handler";
 import { DASHBOARD_API, ORDERS_API } from "../../utils/url-helper";
 import { toast } from "react-toastify";
 
-const OrderList = () => {
-  const [filterType, setFilterType] = useState("all");
+const OrderList = ({ filterType }) => {
+  // const [filterType, setFilterType] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [orders, setOrders] = useState([]);
   const [sortColumn, setSortColumn] = useState(null);
@@ -35,7 +35,8 @@ const OrderList = () => {
 
   const navigate = useNavigate();
 
-  // Fetch stats data
+  // Fetch stats data - REMOVED as we calculate from orders now
+  /*
   useEffect(() => {
     const statsDataFunction = async () => {
       try {
@@ -53,6 +54,7 @@ const OrderList = () => {
     };
     statsDataFunction();
   }, []);
+  */
 
   // Fetch orders data
   useEffect(() => {
@@ -196,13 +198,26 @@ const OrderList = () => {
   };
 
   const stats = useMemo(() => {
+    const filteredOrders = getFilteredData();
+    const totalOrders = filteredOrders.length;
+    const deliveredOrders = filteredOrders.filter((order) =>
+      order.status?.toLowerCase().includes("delivered")
+    ).length;
+    const processingOrders = filteredOrders.filter((order) =>
+      order.status?.toLowerCase().includes("processing")
+    ).length;
+    const totalRevenue = filteredOrders.reduce((acc, order) => {
+      const amount = parseFloat(order.total.replace(/[^0-9.-]+/g, ""));
+      return acc + (isNaN(amount) ? 0 : amount);
+    }, 0);
+
     return {
-      total: parseInt(statsData.total_orders) || 0,
-      delivered: parseInt(statsData.delivered) || 0,
-      processing: parseInt(statsData.processing) || 0,
-      revenue: parseFloat(statsData.total_revenue) || 0,
+      total: totalOrders,
+      delivered: deliveredOrders,
+      processing: processingOrders,
+      revenue: totalRevenue,
     };
-  }, [statsData]);
+  }, [orders, filterType, searchTerm]);
 
   const sortedData = getSortedData();
 
@@ -320,42 +335,6 @@ const OrderList = () => {
                 </InputGroup>
               </Col>
               <Col md={6}>
-                <div className="d-flex flex-wrap gap-2 justify-content-md-end">
-                  <ButtonGroup>
-                    <Button
-                      color={filterType === "all" ? "primary" : "dark"}
-                      onClick={() => setFilterType("all")}
-                      outline={filterType !== "all"}
-                    >
-                      <i className="bx bx-globe me-1"></i>
-                      All Time
-                    </Button>
-                    <Button
-                      color={filterType === "week" ? "primary" : "dark"}
-                      onClick={() => setFilterType("week")}
-                      outline={filterType !== "week"}
-                    >
-                      <i className="bx bx-calendar me-1"></i>
-                      Week
-                    </Button>
-                    <Button
-                      color={filterType === "month" ? "primary" : "dark"}
-                      onClick={() => setFilterType("month")}
-                      outline={filterType !== "month"}
-                    >
-                      <i className="bx bx-calendar-check me-1"></i>
-                      Month
-                    </Button>
-                    <Button
-                      color={filterType === "year" ? "primary" : "dark"}
-                      onClick={() => setFilterType("year")}
-                      outline={filterType !== "year"}
-                    >
-                      <i className="bx bx-calendar-event me-1"></i>
-                      Year
-                    </Button>
-                  </ButtonGroup>
-                </div>
               </Col>
             </Row>
 
@@ -483,6 +462,7 @@ const OrderList = () => {
 
 OrderList.propTypes = {
   orders: PropTypes.array,
+  filterType: PropTypes.string,
 };
 
 export default OrderList;
