@@ -17,7 +17,7 @@ import {
 } from "reactstrap";
 import { Link } from "react-router-dom";
 import { apiClient1, apiHandler } from "../../utils/api-handler";
-import { DASHBOARD_API, ORDERS_API } from "../../utils/url-helper";
+import { DASHBOARD_API, ORDERS_API, ORDERS_EXPORT_API } from "../../utils/url-helper";
 import { toast } from "react-toastify";
 
 const OrderList = ({ filterType }) => {
@@ -26,6 +26,7 @@ const OrderList = ({ filterType }) => {
   const [orders, setOrders] = useState([]);
   const [sortColumn, setSortColumn] = useState(null);
   const [sortDirection, setSortDirection] = useState("asc");
+  const [isExporting, setIsExporting] = useState(false);
   const [statsData, setStatsData] = useState({
     total_orders: 0,
     delivered: 0,
@@ -166,6 +167,29 @@ const OrderList = ({ filterType }) => {
     } else {
       setSortColumn(column);
       setSortDirection("asc");
+    }
+  };
+
+  const handleExport = async () => {
+    setIsExporting(true);
+    try {
+      const response = await apiHandler.get(apiClient1, ORDERS_EXPORT_API, {
+        responseType: "blob",
+      });
+
+      const url = window.URL.createObjectURL(new Blob([response]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "orders.csv");
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+      toast.success("Orders exported successfully");
+    } catch (err) {
+      console.error("Error exporting orders:", err);
+      toast.error("Error exporting orders");
+    } finally {
+      setIsExporting(false);
     }
   };
 
@@ -317,6 +341,7 @@ const OrderList = ({ filterType }) => {
         </Row>
 
         {/* Main Order List Card */}
+
         <Card>
           <CardBody>
             <Row className="mb-3">
@@ -335,6 +360,26 @@ const OrderList = ({ filterType }) => {
                 </InputGroup>
               </Col>
               <Col md={6}>
+                <div className="d-flex flex-wrap gap-2 justify-content-md-end">
+                  <Button
+                    color="success"
+                    className="btn-rounded waves-effect waves-light"
+                    onClick={handleExport}
+                    disabled={isExporting}
+                  >
+                    {isExporting ? (
+                      <>
+                        <i className="bx bx-loader bx-spin font-size-16 align-middle me-2"></i>
+                        Exporting...
+                      </>
+                    ) : (
+                      <>
+                        <i className="bx bx-export font-size-16 align-middle me-2"></i>
+                        Export CSV
+                      </>
+                    )}
+                  </Button>
+                </div>
               </Col>
             </Row>
 
