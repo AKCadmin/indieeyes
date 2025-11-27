@@ -28,18 +28,11 @@ const OrderDetails = () => {
         if (!orderId) {
           throw new Error("Missing order id");
         }
-        // Fetch ALL orders, then search for the one needed
-        const response = await apiHandler.get(apiClient1, ORDERS_API);
+        // Fetch specific order details
+        const response = await apiHandler.get(apiClient1, `${ORDERS_API}/${orderId}`);
 
-        if (response && response.success && Array.isArray(response.data)) {
-          // Find the order with matching order_id
-          const found = response.data.find(o => o.order_id === orderId);
-          if (found) {
-            setOrder(found);
-          } else {
-            setOrder(null);
-            throw new Error("Order not found");
-          }
+        if (response && response.success && response.data && response.data.order) {
+          setOrder(response.data.order);
         } else {
           throw new Error(response && response.message ? response.message : "Order not found");
         }
@@ -110,18 +103,18 @@ const OrderDetails = () => {
             <DetailBlock title="Order Item">
               <p><strong>Product:</strong> {order.product_name || order.product || "N/A"}</p>
               <p><strong>Quantity:</strong> {order.quantity || 1}</p>
-              <p><strong>Price:</strong> ₹{order.total}</p>
+              <p><strong>Price:</strong> ₹{order.total_amount || order.total}</p>
               {order.product_image && (
                 <img src={order.product_image} alt="product" style={{ maxWidth: 80, borderRadius: 6 }} />
               )}
             </DetailBlock>
 
             <DetailBlock title="Order Summary">
-              <p><strong>Subtotal:</strong> ₹{order.subtotal || order.total}</p>
+              <p><strong>Subtotal:</strong> ₹{order.subtotal || order.total_amount || order.total}</p>
               <p><strong>Discount:</strong> {order.discount || "₹0"}</p>
               <p><strong>Shipping:</strong> {order.shipping_fee || "Free"}</p>
               <p>
-                <strong>Total:</strong> <span className="fw-bold">₹{order.total}</span>
+                <strong>Total:</strong> <span className="fw-bold">₹{order.total_amount || order.total}</span>
               </p>
               <p>
                 <strong>Payment:</strong>
@@ -144,12 +137,11 @@ const OrderDetails = () => {
           <Col md={4}>
             <DetailBlock title="Customer">
               <p>{order.first_name} {order.last_name}</p>
-              <p>{order.email}</p>
               <p><Badge color="info">{order.customer_type || "Regular"}</Badge></p>
             </DetailBlock>
 
             <DetailBlock title="Contact Information">
-              <p>{order.contact_phone || "N/A"}</p>
+              <p>{order.phone || order.contact_phone || order.mobile || "N/A"}</p>
               <p>{order.email}</p>
             </DetailBlock>
 

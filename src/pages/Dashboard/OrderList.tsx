@@ -66,6 +66,7 @@ const OrderList = ({ filterType }) => {
         if (response.success && Array.isArray(response.data)) {
           const formattedOrders = response.data.map((order) => ({
             orderId: order.order_id,
+            id: order.id,
             customer:
               `${order.first_name || ""} ${order.last_name || ""}`.trim() ||
               "Unknown",
@@ -474,7 +475,7 @@ const OrderList = ({ filterType }) => {
                             size="sm"
                             color="primary"
                             outline
-                            onClick={() => navigate(`/order/${order.orderId}`)}
+                            onClick={() => navigate(`/order/${order.id}`)}
                           >
                             <i className="bx bx-show me-1"></i>
                             View Details
