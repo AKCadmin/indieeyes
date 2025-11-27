@@ -141,8 +141,9 @@ const OrderDetails = () => {
             </DetailBlock>
 
             <DetailBlock title="Contact Information">
-              <p>{order.phone || order.contact_phone || order.mobile || "N/A"}</p>
-              <p>{order.email}</p>
+              {/* <p>{order.phone || order.contact_phone || order.mobile || "N/A"}</p> */}
+              <p>Phone: {order.phone_number || order.contact_phone || order.mobile || "N/A"}</p>
+              <p>email: {order.email || "N/A"}</p>
             </DetailBlock>
 
             <DetailBlock title="Shipping Address">
