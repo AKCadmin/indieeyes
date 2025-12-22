@@ -20,6 +20,7 @@ import Colors from "../pages/Products/Colors/Colors";
 import Product from "../pages/Products/Products/Product";
 import AddProduct from "../pages/Products/Products/AddProduct";
 import Inventory from "../pages/Inventory/Inventory";
+import StockLedger from "../pages/Inventory/StockLedger/StockLedger";
 // ... import additional components as needed
 
 const AppRouter = () => {
@@ -46,6 +47,7 @@ const AppRouter = () => {
         <Route path="/add-product-type" element={<AddProductType />} />
         <Route path="/colors" element={<Colors />} />
         <Route path="/inventory" element={<Inventory />} />
+        <Route path="/stock-ledger" element={<StockLedger />} />
         {/* ...add more as needed */}
 
         <Route path="/profile" element={<UserProfile />} />
@@ -78,6 +80,7 @@ export const authProtectedRoutes = [
   { path: "/add-product-type", component: <AddProductType /> },
   { path: "/colors", component: <Colors /> },
   { path: "/inventory", component: <Inventory /> },
+  { path: "/stock-ledger", component: <StockLedger /> },
   { path: "/profile", component: <UserProfile /> },
 ];
 

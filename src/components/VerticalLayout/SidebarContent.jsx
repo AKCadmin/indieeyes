@@ -186,6 +186,13 @@ const SidebarContent = (props) => {
             </li>
 
             <li>
+              <Link to="/stock-ledger">
+                <i className="bx bx-book"></i>
+                <span>{props.t("Stock Ledger")}</span>
+              </Link>
+            </li>
+
+            <li>
               <Link to="/" className="has-arrow">
                 <i className="bx bx-glasses"></i>
                 <span>{props.t("Lens")}</span>
