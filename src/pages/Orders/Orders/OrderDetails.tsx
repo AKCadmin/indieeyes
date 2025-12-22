@@ -1,0 +1,235 @@
+// @ts-nocheck
+import React, { useEffect, useState } from "react";
+import { useParams, Link } from "react-router-dom";
+import { Card, CardBody, Row, Col, Spinner, Badge, Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input } from "reactstrap";
+import { apiClient1, apiHandler } from "../../../utils/api-handler";
+import { ORDERS_API } from "../../../utils/url-helper";
+import { toast } from "react-toastify";
+
+// Helper Component for display sections
+const DetailBlock = ({ title, children }) => (
+  <Card className="mb-3">
+    <CardBody>
+      <h5 className="mb-3">{title}</h5>
+      {children}
+    </CardBody>
+  </Card>
+);
+
+const OrderDetails = () => {
+  const { orderId } = useParams();
+  const [order, setOrder] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [cancelModalOpen, setCancelModalOpen] = useState(false);
+  const [cancelReason, setCancelReason] = useState("");
+  const [cancelling, setCancelling] = useState(false);
+
+  useEffect(() => {
+    const fetchOrderDetails = async () => {
+      setLoading(true);
+      try {
+        if (!orderId) {
+          throw new Error("Missing order id");
+        }
+        // Fetch specific order details
+        const response = await apiHandler.get(apiClient1, `${ORDERS_API}/${orderId}`);
+
+        if (response && response.success && response.data && response.data.order) {
+          const ord = response.data.order;
+          // attach shiprocket info if returned separately
+          if (response.data.shiprocket) ord.shiprocket = response.data.shiprocket;
+          setOrder(ord);
+        } else {
+          throw new Error(response && response.message ? response.message : "Order not found");
+        }
+      } catch (err) {
+        const e = err;
+        const serverMessage = e?.response?.data?.message || e?.response?.data || e?.message;
+        const status = e?.response?.status;
+        console.error("Failed fetching order details", e);
+        toast.error(`Unable to load order details${status ? ' (' + status + ')' : ''}: ${serverMessage}`);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchOrderDetails();
+  }, [orderId]);
+
+  if (loading) {
+    return (
+      <div className="page-content">
+        <div className="container-fluid text-center py-5">
+          <Spinner color="primary" />
+          <h4 className="mt-3">Loading order details...</h4>
+        </div>
+      </div>
+    );
+  }
+
+  if (!order) {
+    return (
+      <div className="page-content">
+        <div className="container-fluid text-center py-5">
+          <h4>Order not found</h4>
+          <Link to="/dashboard" className="btn btn-outline-dark">Back to Dashboard</Link>
+        </div>
+      </div>
+    );
+  }
+
+  // MAIN RENDER: adjust fields to your API response
+  return (
+    <div className="page-content">
+      <div className="container-fluid">
+        {/* Header / Summary */}
+        <Card className="mb-4">
+          <CardBody>
+            <div className="d-flex align-items-center justify-content-between">
+              <div>
+                <h3 className="mb-1">Order ID: {order.order_id || order.id}</h3>
+                <Badge color={
+                  order.status === "confirmed" ? "success" :
+                  order.status === "refunded" ? "warning" :
+                  order.status === "processing" ? "info" :
+                  order.status === "cancelled" ? "danger" :
+                  "secondary"
+                }>
+                  {order.status || "unknown"}
+                </Badge>
+                <span className="mx-3 text-muted">{order.order_date}</span>
+              </div>
+              <div>
+                {order?.shiprocket && order.shiprocket.cancellation_status === null && (
+                  <Button color="outline-danger" className="me-2" onClick={() => setCancelModalOpen(true)}>
+                    Cancel Order
+                  </Button>
+                )}
+                <Link to="/dashboard" className="btn btn-outline-dark">Back to Dashboard</Link>
+              </div>
+            </div>
+          </CardBody>
+        </Card>
+
+        {/* Cancel Modal */}
+        <Modal isOpen={cancelModalOpen} toggle={() => setCancelModalOpen(!cancelModalOpen)}>
+          <ModalHeader toggle={() => setCancelModalOpen(!cancelModalOpen)}>Cancel Order</ModalHeader>
+          <ModalBody>
+            <Form>
+              <FormGroup>
+                <Label for="cancelReason">Reason for cancellation</Label>
+                <Input
+                  type="textarea"
+                  name="reason"
+                  id="cancelReason"
+                  value={cancelReason}
+                  onChange={(e) => setCancelReason(e.target.value)}
+                  placeholder="Provide cancellation reason..."
+                />
+              </FormGroup>
+            </Form>
+            <div className="small text-muted">This reason will be sent to the server.</div>
+          </ModalBody>
+          <ModalFooter>
+            <Button color="secondary" onClick={() => setCancelModalOpen(false)} disabled={cancelling}>Close</Button>
+            <Button color="danger" onClick={async () => {
+              try {
+                setCancelling(true);
+                const orderNumber = order?.order_number || order?.order_id || order?.id || order?.orderNo || order?.number;
+                if (!orderNumber) throw new Error('Missing order number');
+                const url = `http://localhost:5000/api/shipments/${orderNumber}/cancel`;
+                const body = { reason: cancelReason };
+                const res = await fetch(url, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify(body),
+                });
+                const data = await res.json().catch(() => null);
+                if (!res.ok) {
+                  const msg = data?.message || `Request failed (${res.status})`;
+                  throw new Error(msg);
+                }
+                toast.success('Order cancelled successfully');
+                setCancelModalOpen(false);
+                // update UI status if present
+                setOrder(prev => prev ? { ...prev, status: 'cancelled' } : prev);
+              } catch (err) {
+                console.error('Cancel failed', err);
+                const message = err?.message || 'Unable to cancel order';
+                toast.error(`Cancel failed: ${message}`);
+              } finally {
+                setCancelling(false);
+              }
+            }} disabled={cancelling || !cancelReason.trim()}>
+              {cancelling ? 'Cancelling...' : 'Submit Cancellation'}
+            </Button>
+          </ModalFooter>
+        </Modal>
+
+        <Row>
+          {/* Left - Order core info */}
+          <Col md={8}>
+            <DetailBlock title="Order Item">
+              <p><strong>Product:</strong> {order.product_name || order.product || "N/A"}</p>
+              <p><strong>Quantity:</strong> {order.quantity || 1}</p>
+              <p><strong>Price:</strong> ₹{order.total_amount || order.total}</p>
+              {order.product_image && (
+                <img src={order.product_image} alt="product" style={{ maxWidth: 80, borderRadius: 6 }} />
+              )}
+            </DetailBlock>
+
+            <DetailBlock title="Order Summary">
+              <p><strong>Subtotal:</strong> ₹{order.subtotal || order.total_amount || order.total}</p>
+              <p><strong>Discount:</strong> {order.discount || "₹0"}</p>
+              <p><strong>Shipping:</strong> {order.shipping_fee || "Free"}</p>
+              <p>
+                <strong>Total:</strong> <span className="fw-bold">₹{order.total_amount || order.total}</span>
+              </p>
+              <p>
+                <strong>Payment:</strong>
+                <Badge color={
+                  order.payment_status === "success" ? "success" :
+                  order.payment_status === "failed" ? "danger" :
+                  "warning"
+                } className="ms-2">
+                  {order.payment_status || "N/A"}
+                </Badge>
+              </p>
+            </DetailBlock>
+
+            <DetailBlock title="Timeline">
+              <p>{order.timeline || "Order placed, awaiting updates..."}</p>
+            </DetailBlock>
+          </Col>
+
+          {/* Right - Customer/contact/shipping/billing */}
+          <Col md={4}>
+            <DetailBlock title="Customer">
+              <p>{order.first_name} {order.last_name}</p>
+              <p><Badge color="info">{order.customer_type || "Regular"}</Badge></p>
+            </DetailBlock>
+
+            <DetailBlock title="Contact Information">
+              {/* <p>{order.phone || order.contact_phone || order.mobile || "N/A"}</p> */}
+              <p>Phone: {order.phone_number || order.contact_phone || order.mobile || "N/A"}</p>
+              <p>email: {order.email || "N/A"}</p>
+            </DetailBlock>
+
+            <DetailBlock title="Shipping Address">
+              <p>{order.shipping_address || "N/A"}</p>
+            </DetailBlock>
+
+            <DetailBlock title="Billing Address">
+              <p>{order.billing_address || order.shipping_address || "N/A"}</p>
+            </DetailBlock>
+
+            <DetailBlock title="Notes">
+              <p>{order.notes || "No notes for this order."}</p>
+            </DetailBlock>
+          </Col>
+        </Row>
+      </div>
+    </div>
+  );
+};
+
+export default OrderDetails;

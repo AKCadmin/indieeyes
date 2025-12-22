@@ -1,0 +1,136 @@
+import React, { useMemo, useEffect, useState } from "react";
+import PropTypes from 'prop-types';
+import { apiClient1, apiHandler } from "../../utils/api-handler";
+import { PRODUCTS_API } from "../../utils/url-helper";
+import { toast } from "react-toastify";
+import { ButtonGroup, Button, Row, Col } from "reactstrap";
+import TableContainer from '../../components/Common/TableContainer';
+
+const ProductList = ({ filterType }) => {
+    const [products, setProducts] = useState([]);
+    // const [filterType, setFilterType] = useState("all");
+
+    const columns = useMemo(
+        () => [
+            {
+                header: 'Product Name',
+                accessorKey: 'name',
+                enableColumnFilter: false,
+                enableSorting: true,
+            },
+            {
+                header: 'Category',
+                accessorKey: 'category',
+                enableColumnFilter: false,
+                enableSorting: true,
+            },
+            {
+                header: 'Price',
+                accessorKey: 'price',
+                enableColumnFilter: false,
+                enableSorting: true,
+            },
+            {
+                header: 'Stock',
+                accessorKey: 'inventory',
+                enableColumnFilter: false,
+                enableSorting: true,
+            },
+        ],
+        []
+    );
+
+    // Fetch products data
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const response = await apiHandler.get(apiClient1, PRODUCTS_API);
+
+                if (response.success && Array.isArray(response.data)) {
+                    const formattedProducts = response.data.map((product) => ({
+                        id: product.id,
+                        name: product.name,
+                        category: product.category,
+                        price: `₹${parseFloat(product.price).toFixed(2)}`,
+                        inventory: product.inventory,
+                        created_at: new Date(product.created_at),
+                    }));
+                    setProducts(formattedProducts);
+                } else {
+                    throw new Error(response.message || "Invalid products data format");
+                }
+            } catch (err: any) {
+                console.error("Error fetching products:", err);
+                toast.error("Error fetching products: " + err.message);
+            }
+        };
+        fetchProducts();
+    }, []);
+
+    // Filter data based on time period
+    const getFilteredData = () => {
+        const currentDate = new Date();
+        let filtered = [...products];
+
+        switch (filterType) {
+            case "week":
+                const weekAgo = new Date();
+                weekAgo.setDate(currentDate.getDate() - 7);
+                filtered = filtered.filter(
+                    (product) => product.created_at >= weekAgo
+                );
+                break;
+            case "month":
+                const monthAgo = new Date();
+                monthAgo.setMonth(currentDate.getMonth() - 1);
+                filtered = filtered.filter(
+                    (product) => product.created_at >= monthAgo
+                );
+                break;
+            case "year":
+                const yearAgo = new Date();
+                yearAgo.setFullYear(currentDate.getFullYear() - 1);
+                filtered = filtered.filter(
+                    (product) => product.created_at >= yearAgo
+                );
+                break;
+            default:
+                break;
+        }
+
+        return filtered;
+    };
+
+    const filteredData = getFilteredData();
+
+    return (
+        <div className="card">
+            <div className="card-body">
+                <Row className="mb-4">
+                    <Col md={6}>
+                        <h4 className="card-title mb-0">Product List</h4>
+                    </Col>
+                    <Col md={6}>
+                    </Col>
+                </Row>
+                <TableContainer
+                    columns={columns}
+                    data={filteredData || []}
+                    isGlobalFilter={true}
+                    isPagination={true}
+                    SearchPlaceholder="Search products..."
+                    pagination="pagination"
+                    paginationWrapper='dataTables_paginate paging_simple_numbers'
+                    tableClass="table-bordered table-nowrap dt-responsive nowrap w-100 dataTable no-footer dtr-inline"
+                />
+            </div>
+        </div>
+    );
+}
+
+ProductList.propTypes = {
+    preGlobalFilteredRows: PropTypes.any,
+    filterType: PropTypes.string,
+};
+
+export default ProductList;
