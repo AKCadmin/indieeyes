@@ -10,6 +10,7 @@ import UserProfile from "../pages/Authentication/user-profile";
 
 // Dashboard and others
 import Dashboard from "../pages/Dashboard/index";
+import ReturnProducts from "../pages/Dashboard/ReturnProducts";
 import EcommerceOrder from "../pages/Orders/Orders";            // Order listing
 import OrderDetails from "../pages/Orders/Orders/OrderDetails"; // Individual order details
 
@@ -35,6 +36,7 @@ const AppRouter = () => {
 
         {/* Auth-protected routes */}
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/return-products" element={<ReturnProducts />} />
 
         {/* Orders */}
         <Route path="/order" element={<EcommerceOrder />} />         {/* Order list page */}
@@ -72,6 +74,7 @@ export const publicRoutes = [
 
 export const authProtectedRoutes = [
   { path: "/dashboard", component: <Dashboard /> },
+  { path: "/return-products", component: <ReturnProducts /> },
   { path: "/order", component: <EcommerceOrder /> },
   { path: "/order/:orderId", component: <OrderDetails /> },
   { path: "/products", component: <Product /> },

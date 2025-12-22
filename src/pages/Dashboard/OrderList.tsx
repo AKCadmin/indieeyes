@@ -36,6 +36,51 @@ const OrderList = ({ filterType }) => {
 
   const navigate = useNavigate();
 
+  const handleCreateShipment = async (orderId: number) => {
+    try {
+      const response = await fetch("http://localhost:5000/api/shipments/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ orderId }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        toast.success(`Shipment created successfully! ID: ${data.shipmentId || ""}`);
+      } else {
+        const error = await response.json();
+        toast.error(error.message || "Failed to create shipment");
+      }
+    } catch (error) {
+      console.error("Error creating shipment:", error);
+      toast.error("Error creating shipment");
+    }
+  };
+
+  const handleShipNow = async (shipmentId: number) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/shipments/${shipmentId}/ship-now`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        toast.success("Shipment shipped successfully!");
+      } else {
+        const error = await response.json();
+        toast.error(error.message || "Failed to ship");
+      }
+    } catch (error) {
+      console.error("Error shipping:", error);
+      toast.error("Error shipping order");
+    }
+  };
+
   // Fetch stats data - REMOVED as we calculate from orders now
   /*
   useEffect(() => {
@@ -473,15 +518,41 @@ const OrderList = ({ filterType }) => {
                           </Badge>
                         </td>
                         <td>
-                          <Button
-                            size="sm"
-                            color="primary"
-                            outline
-                            onClick={() => navigate(`/order/${order.id}`)}
-                          >
-                            <i className="bx bx-show me-1"></i>
-                            View Details
-                          </Button>
+                          <div className="d-flex gap-2">
+                            {order.status && order.status.toLowerCase().includes("confirmed") && (
+                              <Button
+                                size="sm"
+                                color="info"
+                                outline
+                                onClick={() => handleCreateShipment(order.id)}
+                                title="Create Shipment"
+                              >
+                                <i className="bx bx-box me-1"></i>
+                                Create
+                              </Button>
+                            )}
+                            {order.status && order.status.toLowerCase().includes("processing") && (
+                              <Button
+                                size="sm"
+                                color="warning"
+                                outline
+                                onClick={() => handleShipNow(order.id)}
+                                title="Ship Now"
+                              >
+                                <i className="bx bx-send me-1"></i>
+                                Ship Now
+                              </Button>
+                            )}
+                            <Button
+                              size="sm"
+                              color="primary"
+                              outline
+                              onClick={() => navigate(`/order/${order.id}`)}
+                            >
+                              <i className="bx bx-show me-1"></i>
+                              View
+                            </Button>
+                          </div>
                         </td>
                       </tr>
                     ))

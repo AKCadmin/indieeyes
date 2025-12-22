@@ -13,6 +13,12 @@ const menuItems = [
       badgecolor: "bg-primary",
     },
     {
+      id: "return-products",
+      label: "Return Products",
+      icon: "mdi-package-remove",
+      link: "/return-products",
+    },
+    {
       id: "calendar",
       label: "Calendar",
       icon: "mdi-calendar-outline",

@@ -160,11 +160,15 @@ const StockLedger = () => {
         accessorKey: "transaction_type",
         enableColumnFilter: false,
         enableSorting: true,
-        cell: (cell: any) => (
-          <span className={`badge badge-${getTransactionTypeBadge(cell.row.original.transaction_type)}`}>
-            {cell.row.original.transaction_type}
-          </span>
-        ),
+        cell: ({ getValue }) => {
+          const type = getValue() as string;
+          const badgeTone = getTransactionTypeBadge(type);
+          return (
+            <span className={`badge text-bg-${badgeTone}`}>
+              {type || "—"}
+            </span>
+          );
+        },
       },
       {
         header: "Quantity",

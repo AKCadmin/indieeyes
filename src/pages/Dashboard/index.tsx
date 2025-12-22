@@ -96,11 +96,11 @@ const Dashboard = (props) => {
               <CustomerList filterType={filterType} />
             </Col>
           </Row>
-          <Row>
+          {/* <Row>
             <Col lg="12">
               <RefundOrderList filterType={filterType} />
             </Col>
-          </Row>
+          </Row> */}
         </Container>
       </div>
     </React.Fragment>

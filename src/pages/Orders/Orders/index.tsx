@@ -7,6 +7,7 @@ import TableContainer from "../../../components/Common/TableContainer";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import Spinners from "../../../components/Common/Spinner";
+import { toast } from "react-toastify";
 
 //import components
 import Breadcrumbs from "../../../components/Common/Breadcrumb";
@@ -203,6 +204,51 @@ const EcommerceOrder = () => {
     toggle();
   };
 
+  const handleCreateShipment = async (orderId: number) => {
+    try {
+      const response = await fetch("http://localhost:5000/api/shipments/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ orderId }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        toast.success(`Shipment created successfully! ID: ${data.shipmentId || ""}`);
+      } else {
+        const error = await response.json();
+        toast.error(error.message || "Failed to create shipment");
+      }
+    } catch (error) {
+      console.error("Error creating shipment:", error);
+      toast.error("Error creating shipment");
+    }
+  };
+
+  const handleShipNow = async (shipmentId: number) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/shipments/${shipmentId}/ship-now`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        toast.success("Shipment shipped successfully!");
+      } else {
+        const error = await response.json();
+        toast.error(error.message || "Failed to ship");
+      }
+    } catch (error) {
+      console.error("Error shipping:", error);
+      toast.error("Error shipping order");
+    }
+  };
+
   const columns = useMemo(
     () => [
       {
@@ -316,8 +362,25 @@ const EcommerceOrder = () => {
         enableColumnFilter: false,
         enableSorting: false,
         cell: (cellProps) => {
+          const orderId = cellProps.row.original.id;
           return (
-            <div className="d-flex gap-3">
+            <div className="d-flex gap-2 flex-wrap">
+              <Button
+                type="button"
+                color="info"
+                className="btn-sm btn-rounded"
+                onClick={() => handleCreateShipment(orderId)}
+              >
+                Create Shipment
+              </Button>
+              <Button
+                type="button"
+                color="warning"
+                className="btn-sm btn-rounded"
+                onClick={() => handleShipNow(orderId)}
+              >
+                Ship Now
+              </Button>
               <Link
                 to="#"
                 className="text-success"
