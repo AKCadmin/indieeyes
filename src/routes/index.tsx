@@ -22,6 +22,7 @@ import Product from "../pages/Products/Products/Product";
 import AddProduct from "../pages/Products/Products/AddProduct";
 import Inventory from "../pages/Inventory/Inventory";
 import StockLedger from "../pages/Inventory/StockLedger/StockLedger";
+import RTOLogs from "../pages/Inventory/RTOLogs/RTOLogs";
 // ... import additional components as needed
 
 const AppRouter = () => {
@@ -50,6 +51,7 @@ const AppRouter = () => {
         <Route path="/colors" element={<Colors />} />
         <Route path="/inventory" element={<Inventory />} />
         <Route path="/stock-ledger" element={<StockLedger />} />
+        <Route path="/rto-logs" element={<RTOLogs />} />
         {/* ...add more as needed */}
 
         <Route path="/profile" element={<UserProfile />} />
@@ -84,6 +86,7 @@ export const authProtectedRoutes = [
   { path: "/colors", component: <Colors /> },
   { path: "/inventory", component: <Inventory /> },
   { path: "/stock-ledger", component: <StockLedger /> },
+  { path: "/rto-logs", component: <RTOLogs /> },
   { path: "/profile", component: <UserProfile /> },
 ];
 

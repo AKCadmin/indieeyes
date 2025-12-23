@@ -200,6 +200,13 @@ const SidebarContent = (props) => {
             </li>
 
             <li>
+              <Link to="/rto-logs">
+                <i className="bx bx-archive-out"></i>
+                <span>{props.t("RTO Logs")}</span>
+              </Link>
+            </li>
+
+            <li>
               <Link to="/" className="has-arrow">
                 <i className="bx bx-glasses"></i>
                 <span>{props.t("Lens")}</span>
